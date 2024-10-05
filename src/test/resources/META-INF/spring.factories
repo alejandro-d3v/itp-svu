@@ -1,0 +1,2 @@
+org.springframework.test.context.ContextCustomizerFactory = co.edu.itp.svu.\
+    config.TestContainersSpringContextCustomizerFactory
