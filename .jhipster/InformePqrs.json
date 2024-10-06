@@ -1,0 +1,46 @@
+{
+  "annotations": {
+    "changelogDate": "20241006001959"
+  },
+  "applications": ["VentanillaUnica"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "fechaInicio",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "fechaFin",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "totalPqrs",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "totalResueltas",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "totalPendientes",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "InformePqrs",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "oficina",
+      "relationshipName": "oficina",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

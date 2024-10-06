@@ -1,0 +1,29 @@
+{
+  "ventanillaUnicaApp": {
+    "archivoAdjunto": {
+      "home": {
+        "title": "Archivo Adjuntos",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Archivo Adjunto",
+        "createOrEditLabel": "Crear o editar Archivo Adjunto",
+        "notFound": "Ningún Archivo Adjuntos encontrado"
+      },
+      "created": "Un nuevo Archivo Adjunto ha sido creado con el identificador { param }",
+      "updated": "Un Archivo Adjunto ha sido actualizado con el identificador { param }",
+      "deleted": "Un Archivo Adjunto ha sido eliminado con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Archivo Adjunto { id }?"
+      },
+      "detail": {
+        "title": "Archivo Adjunto"
+      },
+      "id": "ID",
+      "nombre": "Nombre",
+      "tipo": "Tipo",
+      "urlArchivo": "Url Archivo",
+      "fechaSubida": "Fecha Subida",
+      "pqrs": "Pqrs",
+      "respuesta": "Respuesta"
+    }
+  }
+}

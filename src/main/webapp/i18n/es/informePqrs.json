@@ -1,0 +1,29 @@
+{
+  "ventanillaUnicaApp": {
+    "informePqrs": {
+      "home": {
+        "title": "Informe Pqrs",
+        "refreshListLabel": "Refrescar lista",
+        "createLabel": "Crear nuevo Informe Pqrs",
+        "createOrEditLabel": "Crear o editar Informe Pqrs",
+        "notFound": "Ningún Informe Pqrs encontrado"
+      },
+      "created": "Un nuevo Informe Pqrs ha sido creado con el identificador { param }",
+      "updated": "Un Informe Pqrs ha sido actualizado con el identificador { param }",
+      "deleted": "Un Informe Pqrs ha sido eliminado con el identificador { param }",
+      "delete": {
+        "question": "¿Seguro que quiere eliminar Informe Pqrs { id }?"
+      },
+      "detail": {
+        "title": "Informe Pqrs"
+      },
+      "id": "ID",
+      "fechaInicio": "Fecha Inicio",
+      "fechaFin": "Fecha Fin",
+      "totalPqrs": "Total Pqrs",
+      "totalResueltas": "Total Resueltas",
+      "totalPendientes": "Total Pendientes",
+      "oficina": "Oficina"
+    }
+  }
+}

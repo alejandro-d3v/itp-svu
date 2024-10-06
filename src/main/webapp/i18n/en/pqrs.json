@@ -1,0 +1,30 @@
+{
+  "ventanillaUnicaApp": {
+    "pqrs": {
+      "home": {
+        "title": "Pqrs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Pqrs",
+        "createOrEditLabel": "Create or edit a Pqrs",
+        "notFound": "No Pqrs found"
+      },
+      "created": "A new Pqrs is created with identifier { param }",
+      "updated": "A Pqrs is updated with identifier { param }",
+      "deleted": "A Pqrs is deleted with identifier { param }",
+      "delete": {
+        "question": "Are you sure you want to delete Pqrs { id }?"
+      },
+      "detail": {
+        "title": "Pqrs"
+      },
+      "id": "ID",
+      "titulo": "Titulo",
+      "descripcion": "Descripcion",
+      "fechaCreacion": "Fecha Creacion",
+      "fechaLimiteRespuesta": "Fecha Limite Respuesta",
+      "estado": "Estado",
+      "archivosAdjuntos": "Archivos Adjuntos",
+      "oficinaResponder": "Oficina Responder"
+    }
+  }
+}

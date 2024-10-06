@@ -1,0 +1,28 @@
+{
+  "ventanillaUnicaApp": {
+    "oficina": {
+      "home": {
+        "title": "Oficinas",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Oficina",
+        "createOrEditLabel": "Create or edit a Oficina",
+        "notFound": "No Oficinas found"
+      },
+      "created": "A new Oficina is created with identifier { param }",
+      "updated": "A Oficina is updated with identifier { param }",
+      "deleted": "A Oficina is deleted with identifier { param }",
+      "delete": {
+        "question": "Are you sure you want to delete Oficina { id }?"
+      },
+      "detail": {
+        "title": "Oficina"
+      },
+      "id": "ID",
+      "nombre": "Nombre",
+      "descripcion": "Descripcion",
+      "nivel": "Nivel",
+      "oficinaSuperior": "Oficina Superior",
+      "notificacion": "Notificacion"
+    }
+  }
+}

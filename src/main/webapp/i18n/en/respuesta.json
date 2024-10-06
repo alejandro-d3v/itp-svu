@@ -1,0 +1,28 @@
+{
+  "ventanillaUnicaApp": {
+    "respuesta": {
+      "home": {
+        "title": "Respuestas",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Respuesta",
+        "createOrEditLabel": "Create or edit a Respuesta",
+        "notFound": "No Respuestas found"
+      },
+      "created": "A new Respuesta is created with identifier { param }",
+      "updated": "A Respuesta is updated with identifier { param }",
+      "deleted": "A Respuesta is deleted with identifier { param }",
+      "delete": {
+        "question": "Are you sure you want to delete Respuesta { id }?"
+      },
+      "detail": {
+        "title": "Respuesta"
+      },
+      "id": "ID",
+      "contenido": "Contenido",
+      "fechaRespuesta": "Fecha Respuesta",
+      "estado": "Estado",
+      "archivosAdjuntos": "Archivos Adjuntos",
+      "pqr": "Pqr"
+    }
+  }
+}
