@@ -4,11 +4,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>co.edu.itp.svu</groupId>
-    <artifactId>svu</artifactId>
+    <artifactId>ventanilla-unica</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Svu</name>
-    <description>Description for Svu</description>
+    <name>Ventanilla Unica</name>
+    <description>Description for Ventanilla Unica</description>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -31,7 +31,7 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <start-class>co.edu.itp.svu.SvuApp</start-class>
+        <start-class>co.edu.itp.svu.VentanillaUnicaApp</start-class>
         <argLine>-Djava.security.egd=file:/dev/./urandom -Xmx1G</argLine>
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
         <run.addResources>false</run.addResources>
@@ -598,7 +598,7 @@
                             </platforms>
                         </from>
                         <to>
-                            <image>svu:latest</image>
+                            <image>ventanillaunica:latest</image>
                         </to>
                         <container>
                             <entrypoint>

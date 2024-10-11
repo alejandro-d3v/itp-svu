@@ -1,0 +1,31 @@
+{
+  "annotations": {
+    "changelogDate": "20241006001954"
+  },
+  "applications": ["VentanillaUnica"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "nombre",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "descripcion",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "nivel",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "oficinaSuperior",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Oficina",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

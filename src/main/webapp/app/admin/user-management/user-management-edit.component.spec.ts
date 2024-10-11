@@ -93,8 +93,8 @@ describe('UserManagementEdit Component', () => {
       // GIVEN
       axiosStub.put.resolves({
         headers: {
-          'x-svuapp-alert': '',
-          'x-svuapp-params': '',
+          'x-ventanillaunicaapp-alert': '',
+          'x-ventanillaunicaapp-params': '',
         },
       });
       axiosStub.get.withArgs('api/admin/users/' + 'ABC').resolves({
@@ -123,8 +123,8 @@ describe('UserManagementEdit Component', () => {
       // GIVEN
       axiosStub.post.resolves({
         headers: {
-          'x-svuapp-alert': '',
-          'x-svuapp-params': '',
+          'x-ventanillaunicaapp-alert': '',
+          'x-ventanillaunicaapp-params': '',
         },
       });
       axiosStub.get.resolves({});

@@ -1,0 +1,42 @@
+{
+  "annotations": {
+    "changelogDate": "20241006001956"
+  },
+  "applications": ["VentanillaUnica"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "contenido",
+      "fieldType": "TextBlob",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "fechaRespuesta",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "estado",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "Respuesta",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "archivoAdjunto",
+      "relationshipName": "archivosAdjuntos",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "pqrs",
+      "relationshipName": "pqr",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

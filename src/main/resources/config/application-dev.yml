@@ -32,12 +32,12 @@ spring:
       indent-output: true
   data:
     mongodb:
-      uri: mongodb://localhost:27017/svu
+      uri: mongodb://localhost:27017/VentanillaUnica
   mail:
     host: localhost
     port: 25
-    username:
-    password:
+    username: svumongo
+    password: forx45661
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:

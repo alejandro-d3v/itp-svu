@@ -7,7 +7,7 @@
           <font-awesome-icon icon="sync" :spin="isFetching"></font-awesome-icon>
           <span v-text="t$('ventanillaUnicaApp.oficina.home.refreshListLabel')"></span>
         </button>
-        <router-link :to="{ name: 'OficinaCreate' }" custom v-slot="{ navigate }">
+        <router-link :to="{ name: 'OficinaUserCreate' }" custom v-slot="{ navigate }">
           <button
             @click="navigate"
             id="jh-create-entity"

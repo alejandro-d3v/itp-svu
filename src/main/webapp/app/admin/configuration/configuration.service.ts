@@ -56,6 +56,6 @@ export default class ConfigurationService {
       }
     }
     // by default, use the default ApplicationContext Id
-    return res.contexts.svu.beans;
+    return res.contexts.VentanillaUnica.beans;
   }
 }

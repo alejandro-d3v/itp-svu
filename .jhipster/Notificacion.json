@@ -1,0 +1,40 @@
+{
+  "annotations": {
+    "changelogDate": "20241006001958"
+  },
+  "applications": ["VentanillaUnica"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "tipo",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "fecha",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "mensaje",
+      "fieldType": "TextBlob",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "leido",
+      "fieldType": "Boolean"
+    }
+  ],
+  "name": "Notificacion",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "oficina",
+      "relationshipName": "destinatarios",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

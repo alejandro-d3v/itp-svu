@@ -1,0 +1,79 @@
+application {
+  config {
+    baseName VentanillaUnica,
+    applicationType monolith,
+    authenticationType jwt,
+    packageName co.edu.itp.svu,
+    databaseType mongodb,
+    buildTool maven
+  }
+
+  entities Oficina, Pqrs, Respuesta, ArchivoAdjunto, Notificacion, InformePqrs
+}
+
+entity Oficina {
+  nombre String required,
+  descripcion String,
+  nivel String required, // Ej. "Vicerrectoría", "Facultad", "Departamento"
+  oficinaSuperior String, // Oficina de la que depende, si existe
+}
+
+entity Pqrs {
+  titulo String required,
+  descripcion TextBlob required,
+  fechaCreacion Instant required,
+  fechaLimiteRespuesta Instant,
+  estado String required, // "Pendiente", "En proceso", "Resuelta"
+}
+
+entity Respuesta {
+  contenido TextBlob required,
+  fechaRespuesta Instant required,
+  estado String required, // "Pendiente", "Respondido"
+}
+
+entity ArchivoAdjunto {
+  nombre String required,
+  tipo String required, // Ej. "físico", "digital"
+  urlArchivo String, // Solo para archivos digitales
+  fechaSubida Instant required
+}
+
+entity Notificacion {
+  tipo String required, // Ej. "Nueva PQRS", "Recordatorio"
+  fecha Instant required,
+  mensaje TextBlob required,
+  leido Boolean
+}
+
+entity InformePqrs {
+  fechaInicio Instant required,
+  fechaFin Instant required,
+  totalPqrs Integer required,
+  totalResueltas Integer required,
+  totalPendientes Integer required
+}
+
+// Relaciones
+relationship ManyToOne {
+  Pqrs{oficinaResponder} to Oficina,
+  Respuesta{pqr} to Pqrs // Relación que vincula la respuesta con la PQRS
+}
+
+relationship OneToMany {
+  Pqrs{archivosAdjuntos} to ArchivoAdjunto, // Archivos en la PQRS
+  Respuesta{archivosAdjuntos} to ArchivoAdjunto // Archivos en la Respuesta
+}
+
+relationship ManyToMany {
+  Notificacion{destinatarios} to Oficina
+}
+
+relationship ManyToOne {
+  InformePqrs{oficina} to Oficina
+}
+
+// DTOs y servicios
+dto Oficina, Pqrs, Respuesta, ArchivoAdjunto, Notificacion, InformePqrs with mapstruct
+service Oficina, Pqrs, Respuesta, ArchivoAdjunto, Notificacion, InformePqrs with serviceClass
+paginate Pqrs, Respuesta, Notificacion, InformePqrs with pagination

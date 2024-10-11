@@ -1,0 +1,32 @@
+{
+  "annotations": {
+    "changelogDate": "20241006001957"
+  },
+  "applications": ["VentanillaUnica"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "nombre",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "tipo",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "urlArchivo",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fechaSubida",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "name": "ArchivoAdjunto",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

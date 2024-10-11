@@ -24,7 +24,7 @@ mongock:
 
 spring:
   application:
-    name: svu
+    name: VentanillaUnica
   cloud:
   jackson:
     serialization:
@@ -43,13 +43,13 @@ spring:
           authorities-claim-name: auth
   task:
     execution:
-      thread-name-prefix: svu-task-
+      thread-name-prefix: ventanilla-unica-task-
       pool:
         core-size: 1
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: svu-scheduling-
+      thread-name-prefix: ventanilla-unica-scheduling-
       pool:
         size: 20
   thymeleaf:
@@ -66,9 +66,9 @@ server:
 # ===================================================================
 jhipster:
   clientApp:
-    name: 'svuApp'
+    name: 'ventanillaUnicaApp'
   mail:
-    from: svu@localhost.com
+    from: VentanillaUnica@localhost.com
     base-url: http://127.0.0.1:8080
   logging:
     # To test json console appender

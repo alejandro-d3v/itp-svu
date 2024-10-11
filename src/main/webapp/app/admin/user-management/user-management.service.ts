@@ -29,4 +29,8 @@ export default class UserManagementService {
       return response;
     });
   }
+  //////////////////////////////////////////Modificaciones aqui
+  public retrieveAll(req?: any): Promise<any> {
+    return axios.get(`api/admin/users`);
+  }
 }

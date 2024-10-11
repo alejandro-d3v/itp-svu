@@ -22,6 +22,16 @@ public class OficinaDTO implements Serializable {
 
     private String oficinaSuperior;
 
+    public UserDTO getResponsableDTO() {
+        return responsableDTO;
+    }
+
+    public void setResponsableDTO(UserDTO responsableDTO) {
+        this.responsableDTO = responsableDTO;
+    }
+
+    private UserDTO responsableDTO;
+
     public String getId() {
         return id;
     }

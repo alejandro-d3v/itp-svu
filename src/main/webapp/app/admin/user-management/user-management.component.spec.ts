@@ -85,8 +85,8 @@ describe('UserManagement Component', () => {
       // GIVEN
       axiosStub.delete.resolves({
         headers: {
-          'x-svuapp-alert': '',
-          'x-svuapp-params': '',
+          'x-ventanillaunicaapp-alert': '',
+          'x-ventanillaunicaapp-params': '',
         },
       });
 

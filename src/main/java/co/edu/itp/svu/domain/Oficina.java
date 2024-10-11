@@ -36,12 +36,36 @@ public class Oficina implements Serializable {
     @Field("oficina_superior")
     private String oficinaSuperior;
 
+    // Usamos @DBRef si quieres hacer referencia a la entidad User en la colección de MongoDB
+    @DBRef
+    @Field("responsable")
+    private User responsable;
+
     @DBRef
     @Field("notificacions")
     @JsonIgnoreProperties(value = { "destinatarios" }, allowSetters = true)
     private Set<Notificacion> notificacions = new HashSet<>();
 
+    public User getResponsable() {
+        return responsable;
+    }
+
+    public void setResponsable(User responsable) {
+        this.responsable = responsable;
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
+    // El responsable es un usuario que tendrá un rol específico
+
+    public Oficina(String nombre, User responsable) {
+        this.nombre = nombre;
+        this.responsable = responsable;
+    }
+
+    public Oficina() {
+        this.nombre = "";
+        this.responsable = null;
+    }
 
     public String getId() {
         return this.id;

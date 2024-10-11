@@ -1,8 +1,11 @@
 package co.edu.itp.svu.web.rest;
 
+import co.edu.itp.svu.domain.Oficina;
 import co.edu.itp.svu.repository.OficinaRepository;
 import co.edu.itp.svu.service.OficinaService;
 import co.edu.itp.svu.service.dto.OficinaDTO;
+import co.edu.itp.svu.service.mapper.ArchivoAdjuntoMapper;
+import co.edu.itp.svu.service.mapper.OficinaMapper;
 import co.edu.itp.svu.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -165,5 +168,42 @@ public class OficinaResource {
         LOG.debug("REST request to delete Oficina : {}", id);
         oficinaService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
+    }
+
+    ////Modificaciones aqui//////////////////////////
+
+    @PostMapping("/oficinas")
+    public ResponseEntity<OficinaDTO> createOficinaUser(@Valid @RequestBody OficinaDTO oficinaDTO) throws URISyntaxException {
+        OficinaDTO result = oficinaService.createOficina(oficinaDTO);
+        return ResponseEntity.created(new URI("/api/oficinas/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
+            .body(result);
+    }
+
+    /*
+    @PostMapping("/oficinas")
+    public ResponseEntity<OficinaDTO> createOficinaUser(
+        @Valid @RequestBody OficinaDTO oficinaDTO) throws URISyntaxException {
+
+        LOG.debug("REST request to save Oficina : {}", oficinaDTO);
+        if (oficinaDTO.getId() != null) {
+            throw new BadRequestAlertException("A new oficina cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+       //OficinaDTO oficina = oficinaService.createOficina(oficinaDTO, usernameResponsable);
+        OficinaDTO oficina = oficinaService.createOficina(oficinaDTO);
+        return ResponseEntity.created(new URI("/api/oficinas/" + oficinaDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, oficinaDTO.getId()))
+            .body(oficinaDTO);
+    }
+*/
+    @PutMapping("/oficinas/{id}")
+    public ResponseEntity<OficinaDTO> updateOficinaUser(@Valid @RequestBody OficinaDTO oficinaDTO) {
+        if (!oficinaRepository.existsById(oficinaDTO.getId())) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+        oficinaDTO = oficinaService.updateOficina(oficinaDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, oficinaDTO.getId()))
+            .body(oficinaDTO);
     }
 }

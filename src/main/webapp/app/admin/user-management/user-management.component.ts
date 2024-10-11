@@ -114,8 +114,8 @@ export default defineComponent({
         .remove(this.removeId)
         .then(res => {
           this.alertService.showInfo(
-            this.t$(res.headers['x-svuapp-alert'].toString(), {
-              param: decodeURIComponent(res.headers['x-svuapp-params'].replace(/\+/g, ' ')),
+            this.t$(res.headers['x-ventanillaunicaapp-alert'].toString(), {
+              param: decodeURIComponent(res.headers['x-ventanillaunicaapp-params'].replace(/\+/g, ' ')),
             }),
             { variant: 'danger' },
           );

@@ -95,10 +95,10 @@ mongock:
 
 spring:
   application:
-    name: svu
+    name: VentanillaUnica
   docker:
     compose:
-      enabled: true
+      enabled: false
       lifecycle-management: start-only
       file: src/main/docker/services.yml
   profiles:
@@ -129,13 +129,13 @@ spring:
           authorities-claim-name: auth
   task:
     execution:
-      thread-name-prefix: svu-task-
+      thread-name-prefix: ventanilla-unica-task-
       pool:
         core-size: 2
         max-size: 50
         queue-capacity: 10000
     scheduling:
-      thread-name-prefix: svu-scheduling-
+      thread-name-prefix: ventanilla-unica-scheduling-
       pool:
         size: 2
   thymeleaf:
@@ -166,7 +166,7 @@ info:
 
 jhipster:
   clientApp:
-    name: 'svuApp'
+    name: 'ventanillaUnicaApp'
   # By default CORS is disabled. Uncomment to enable.
   # cors:
   #   allowed-origins: "http://localhost:8100,http://localhost:9000"
@@ -176,12 +176,12 @@ jhipster:
   #   allow-credentials: true
   #   max-age: 1800
   mail:
-    from: svu@localhost
+    from: VentanillaUnica@localhost
   api-docs:
     default-include-pattern: /api/**
     management-include-pattern: /management/**
-    title: Svu API
-    description: Svu API documentation
+    title: Ventanilla Unica API
+    description: Ventanilla Unica API documentation
     version: 0.0.1
     terms-of-service-url:
     contact-name:

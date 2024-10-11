@@ -82,4 +82,22 @@ export default class OficinaService {
         });
     });
   }
+  //////////////////////////////////Modificacione aqui /////////////77
+  // Método para crear una nueva oficina con un usuario responsable
+  // async createWithUser(entity: IOficina, responsableId: string) {
+  // Valida que el ID del responsable esté presente
+  //public createWithUser(entity: IOficina, responsableId: string): Promise<IOficina> {
+  public createWithUser(entity: IOficina): Promise<IOficina> {
+    return new Promise<IOficina>((resolve, reject) => {
+      axios
+        //.post(`${baseApiUrl}/oficinas/${responsableId}`, entity)
+        .post(`${baseApiUrl}/oficinas`, entity)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
 }

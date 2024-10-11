@@ -115,8 +115,8 @@ export default defineComponent({
     },
 
     getToastMessageFromHeader(res: any): string {
-      return this.t$(res.headers['x-svuapp-alert'], {
-        param: decodeURIComponent(res.headers['x-svuapp-params'].replace(/\+/g, ' ')),
+      return this.t$(res.headers['x-ventanillaunicaapp-alert'], {
+        param: decodeURIComponent(res.headers['x-ventanillaunicaapp-params'].replace(/\+/g, ' ')),
       }).toString();
     },
   },
