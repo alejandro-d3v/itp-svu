@@ -141,7 +141,8 @@ public class PqrsResource {
     @GetMapping("")
     public ResponseEntity<List<PqrsDTO>> getAllPqrs(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
         LOG.debug("REST request to get a page of Pqrs");
-        Page<PqrsDTO> page = pqrsService.findAll(pageable);
+        //Page<PqrsDTO> page = pqrsService.findAll(pageable);
+        Page<PqrsDTO> page = pqrsService.findAllOficina(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -155,7 +156,8 @@ public class PqrsResource {
     @GetMapping("/{id}")
     public ResponseEntity<PqrsDTO> getPqrs(@PathVariable("id") String id) {
         LOG.debug("REST request to get Pqrs : {}", id);
-        Optional<PqrsDTO> pqrsDTO = pqrsService.findOne(id);
+        //Optional<PqrsDTO> pqrsDTO = pqrsService.findOne(id);
+        Optional<PqrsDTO> pqrsDTO = pqrsService.findOneOficina(id);
         return ResponseUtil.wrapOrNotFound(pqrsDTO);
     }
 

@@ -1,8 +1,13 @@
 package co.edu.itp.svu.service;
 
+import co.edu.itp.svu.domain.Oficina;
 import co.edu.itp.svu.domain.Pqrs;
+import co.edu.itp.svu.repository.OficinaRepository;
 import co.edu.itp.svu.repository.PqrsRepository;
+import co.edu.itp.svu.service.dto.OficinaDTO;
 import co.edu.itp.svu.service.dto.PqrsDTO;
+import co.edu.itp.svu.service.mapper.ArchivoAdjuntoMapper;
+import co.edu.itp.svu.service.mapper.OficinaMapper;
 import co.edu.itp.svu.service.mapper.PqrsMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -21,11 +26,21 @@ public class PqrsService {
 
     private final PqrsRepository pqrsRepository;
 
-    private final PqrsMapper pqrsMapper;
+    private final OficinaRepository oficinaRepository;
 
-    public PqrsService(PqrsRepository pqrsRepository, PqrsMapper pqrsMapper) {
+    private final PqrsMapper pqrsMapper;
+    private OficinaMapper oficinaMapper;
+
+    public PqrsService(
+        PqrsRepository pqrsRepository,
+        PqrsMapper pqrsMapper,
+        OficinaRepository oficinaRepository,
+        OficinaMapper oficinaMapper
+    ) {
         this.pqrsRepository = pqrsRepository;
         this.pqrsMapper = pqrsMapper;
+        this.oficinaRepository = oficinaRepository;
+        this.oficinaMapper = oficinaMapper;
     }
 
     /**
@@ -104,5 +119,54 @@ public class PqrsService {
     public void delete(String id) {
         LOG.debug("Request to delete Pqrs : {}", id);
         pqrsRepository.deleteById(id);
+    }
+
+    ////////Cambios aqui //////////////////////////77
+
+    /**
+     * Get all the pqrs with oficina.
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    public Page<PqrsDTO> findAllOficina(Pageable pageable) {
+        LOG.debug("Request to get all Pqrs");
+
+        Page<Pqrs> pqrsPage = pqrsRepository.findAll(pageable);
+
+        return pqrsPage.map(pqrs -> {
+            PqrsDTO dto = pqrsMapper.toDto(pqrs);
+
+            // Obtener la oficina
+            Optional<Oficina> oficinaOpt = this.oficinaRepository.findById(dto.getOficinaResponder().getId());
+
+            // Si la oficina existe, mapearla a OficinaDTO y establecerla en el DTO de Pqrs
+            oficinaOpt.ifPresent(oficina -> {
+                OficinaDTO oficinaDTO = oficinaMapper.toDto(oficina); //mapper para Oficina
+                dto.setOficinaResponder(oficinaDTO); // Establecer la oficinaDTO en el DTO
+            });
+
+            return dto;
+        });
+    }
+
+    public Optional<PqrsDTO> findOneOficina(String id) {
+        LOG.debug("Request to get Pqrs : {}", id);
+        return pqrsRepository
+            .findById(id)
+            .map(pqrs -> {
+                PqrsDTO dto = pqrsMapper.toDto(pqrs);
+
+                // Obtener la oficina
+                Optional<Oficina> oficinaOpt = this.oficinaRepository.findById(dto.getOficinaResponder().getId());
+
+                // Si la oficina existe, mapearla a OficinaDTO y establecerla en el DTO de Pqrs
+                oficinaOpt.ifPresent(oficina -> {
+                    OficinaDTO oficinaDTO = oficinaMapper.toDto(oficina); // Mapper para Oficina
+                    dto.setOficinaResponder(oficinaDTO); // Establecer la oficinaDTO en el DTO
+                });
+
+                return dto;
+            });
     }
 }

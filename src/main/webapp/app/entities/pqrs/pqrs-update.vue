@@ -106,13 +106,12 @@
               name="oficinaResponder"
               v-model="pqrs.oficinaResponder"
             >
-              <option :value="null"></option>
               <option
                 :value="pqrs.oficinaResponder && oficinaOption.id === pqrs.oficinaResponder.id ? pqrs.oficinaResponder : oficinaOption"
                 v-for="oficinaOption in oficinas"
                 :key="oficinaOption.id"
               >
-                {{ oficinaOption.id }}
+                {{ oficinaOption.nombre }}
               </option>
             </select>
           </div>

@@ -67,7 +67,7 @@
             <td>
               <div v-if="pqrs.oficinaResponder">
                 <router-link :to="{ name: 'OficinaView', params: { oficinaId: pqrs.oficinaResponder.id } }">{{
-                  pqrs.oficinaResponder.id
+                  pqrs.oficinaResponder.nombre
                 }}</router-link>
               </div>
             </td>
