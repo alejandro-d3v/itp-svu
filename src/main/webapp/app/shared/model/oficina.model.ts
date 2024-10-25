@@ -1,5 +1,6 @@
 //import { IUser } from "./user.model";
 import { type IUser } from '@/shared/model/user.model';
+import { type IPqrs, Pqrs } from './pqrs.model';
 
 export interface IOficina {
   id?: string;
@@ -8,6 +9,7 @@ export interface IOficina {
   nivel?: string;
   oficinaSuperior?: string | null;
   responsableDTO?: IUser | null;
+  pqrsList?: IPqrs[];
 }
 
 export class Oficina implements IOficina {
@@ -18,5 +20,6 @@ export class Oficina implements IOficina {
     public nivel?: string,
     public oficinaSuperior?: string | null,
     public responsableDTO?: IUser | null,
+    public pqrsList: IPqrs[] = [],
   ) {}
 }

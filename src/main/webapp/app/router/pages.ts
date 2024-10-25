@@ -16,7 +16,8 @@ export default [
   },
 
   {
-    path: '/oficina-user/home',
+    path: '/oficina-user/:userId/home',
+    //path: '/oficina-user/home',
     name: 'OficinaUserHome',
     component: OficinaUserHome,
     meta: { authorities: [Authority.USER] },

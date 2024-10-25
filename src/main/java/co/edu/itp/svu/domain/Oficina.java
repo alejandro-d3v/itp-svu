@@ -3,7 +3,9 @@ package co.edu.itp.svu.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -46,6 +48,23 @@ public class Oficina implements Serializable {
     @JsonIgnoreProperties(value = { "destinatarios" }, allowSetters = true)
     private Set<Notificacion> notificacions = new HashSet<>();
 
+    // Este campo almacenará las PQRS dirigidas a esta oficina
+    @DBRef
+    @Field("pqrsList")
+    private List<Pqrs> pqrsList;
+
+    public List<Pqrs> getPqrsList() {
+        return pqrsList;
+    }
+
+    public void setPqrsList(List<Pqrs> pqrsList) {
+        this.pqrsList = pqrsList;
+    }
+
+    public void addPqrs(Pqrs pqrs) {
+        this.pqrsList.add(pqrs);
+    }
+
     public User getResponsable() {
         return responsable;
     }
@@ -60,11 +79,13 @@ public class Oficina implements Serializable {
     public Oficina(String nombre, User responsable) {
         this.nombre = nombre;
         this.responsable = responsable;
+        this.pqrsList = new ArrayList<>();
     }
 
     public Oficina() {
         this.nombre = "";
         this.responsable = null;
+        this.pqrsList = new ArrayList<>();
     }
 
     public String getId() {

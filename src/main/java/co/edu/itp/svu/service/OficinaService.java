@@ -1,8 +1,10 @@
 package co.edu.itp.svu.service;
 
 import co.edu.itp.svu.domain.Oficina;
+import co.edu.itp.svu.domain.Pqrs;
 import co.edu.itp.svu.domain.User;
 import co.edu.itp.svu.repository.OficinaRepository;
+import co.edu.itp.svu.repository.PqrsRepository;
 import co.edu.itp.svu.service.dto.OficinaDTO;
 import co.edu.itp.svu.service.mapper.OficinaMapper;
 import java.util.LinkedList;
@@ -11,9 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import tech.jhipster.web.util.HeaderUtil;
 
 /**
  * Service Implementation for managing {@link co.edu.itp.svu.domain.Oficina}.
@@ -23,16 +23,24 @@ public class OficinaService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OficinaService.class);
 
-    private UserService userService; // Suponiendo que tienes un servicio de User
+    private UserService userService;
 
     private final OficinaRepository oficinaRepository;
 
+    private final PqrsRepository pqrsRepository;
+
     private final OficinaMapper oficinaMapper;
 
-    public OficinaService(OficinaRepository oficinaRepository, OficinaMapper oficinaMapper, UserService userService) {
+    public OficinaService(
+        OficinaRepository oficinaRepository,
+        OficinaMapper oficinaMapper,
+        UserService userService,
+        PqrsRepository pqrsRepository
+    ) {
         this.oficinaRepository = oficinaRepository;
         this.oficinaMapper = oficinaMapper;
         this.userService = userService;
+        this.pqrsRepository = pqrsRepository;
     }
 
     /**
@@ -113,54 +121,7 @@ public class OficinaService {
     }
 
     /////////////////modificaciones////////////////////////////////////////7
-    // Crear una nueva oficina con un usuario responsable
 
-    /* public OficinaDTO createOficina(OficinaDTO oficinaDTO, String usernameResponsable) {
-        LOG.debug("Request to save Oficina : {}", oficinaDTO);
-
-        // Validación inicial del DTO
-        if (oficinaDTO == null) {
-            throw new IllegalArgumentException("OficinaDTO no puede ser null");
-        }
-
-        Optional<User> responsable = userService.getUserWithAuthoritiesByLogin(usernameResponsable);
-        if (!responsable.isPresent()) {
-            LOG.warn("El usuario responsable no existe: {}", usernameResponsable);
-            throw new IllegalArgumentException("El usuario responsable no existe");
-        }
-
-        // Mapeo y guardado
-        Oficina oficina = oficinaMapper.toEntity(oficinaDTO);
-        oficina.setResponsable(responsable.get()); // Asocia el User como responsable
-        oficina = oficinaRepository.save(oficina);
-
-        LOG.info("Oficina creada con éxito: {}", oficina);
-        return oficinaMapper.toDto(oficina);
-    }*/
-
-    /* public OficinaDTO createOficina(OficinaDTO oficinaDTO) {
-        LOG.debug("Request to save Oficina : {}", oficinaDTO);
-
-        // Validación inicial del DTO
-        if (oficinaDTO == null) {
-            throw new IllegalArgumentException("OficinaDTO no puede ser null");
-        }
-        String usernameResponsable = oficinaDTO.getResponsableDTO().getLogin();
-        Optional<User> responsable = userService.getUserWithAuthoritiesByLogin(usernameResponsable);
-        if (!responsable.isPresent()) {
-            LOG.warn("El usuario responsable no existe: {}", usernameResponsable);
-            throw new IllegalArgumentException("El usuario responsable no existe");
-        }
-
-        // Mapeo y guardado
-        Oficina oficina = oficinaMapper.toEntity(oficinaDTO);
-        oficina.setResponsable(responsable.get()); // Asocia el User como responsable
-        oficina = oficinaRepository.save(oficina);
-
-        LOG.info("Oficina creada con éxito: {}", oficina);
-        return oficinaMapper.toDto(oficina);
-    }
-*/
     public OficinaDTO createOficina(OficinaDTO oficinaDTO) {
         LOG.debug("Request to save Oficina : {}", oficinaDTO);
 
@@ -234,28 +195,42 @@ public class OficinaService {
             throw new IllegalArgumentException("La oficina no existe");
         }
     }
-    // Actualizar una oficina existente un usuario responsable
-    /*   public OficinaDTO updateOficina(OficinaDTO oficinaDTO, String usernameResponsable) {
-        LOG.debug("Request to update Oficina : {}", oficinaDTO);
-        Oficina oficina = oficinaMapper.toEntity(oficinaDTO);
-        Optional<Oficina> oficinaOptional = oficinaRepository.findById(oficinaDTO.getId());
-        if (oficinaOptional.isPresent()) {
-            oficina = oficinaOptional.get();
-            oficina.setNombre(oficinaDTO.getNombre());
-            oficina.setOficinaSuperior(oficinaDTO.getOficinaSuperior());
-            //oficina.setNotificacions(oficinaDTO.getNotificacions());
-            oficina.setDescripcion(oficinaDTO.getDescripcion());
-            oficina.setNivel(oficinaDTO.getNivel());
-            Optional<User> responsable = userService.getUserWithAuthoritiesByLogin(usernameResponsable);
-            if (responsable.isPresent()) {
-                oficina.setResponsable(responsable.get());
-                oficina = oficinaRepository.save(oficina);
-                return oficinaMapper.toDto(oficina);
-            } else {
-                throw new IllegalArgumentException("El usuario responsable no existe");
+
+    //Obtener una Oficina con cada
+    public Optional<OficinaDTO> getOficina(String id) {
+        Optional<Oficina> oficinaOpt = oficinaRepository.findById(id);
+
+        if (oficinaOpt.isPresent()) {
+            Oficina oficina = oficinaOpt.get(); // Obtener la oficina
+            List<Pqrs> allPqrs = pqrsRepository.findByOficinaResponder_Id(id); // Obtener todas las PQRS
+
+            // Filtrar y agregar PQRS que pertenecen a esta oficina
+            for (Pqrs pqrs : allPqrs) {
+                if (pqrs.getOficinaResponder().getId().equals(oficina.getId())) {
+                    oficina.addPqrs(pqrs);
+                }
             }
-        } else {
-            throw new IllegalArgumentException("La oficina no existe");
         }
-    }*/
+
+        return oficinaOpt.map(oficinaMapper::toDto);
+    }
+
+    ////////////////777
+    public Optional<OficinaDTO> getOficinaUser(String id) {
+        Optional<Oficina> oficinaOpt = Optional.ofNullable(oficinaRepository.findByResponsable_Id(id));
+
+        if (oficinaOpt.isPresent()) {
+            Oficina oficina = oficinaOpt.get(); // Obtener la oficina
+            List<Pqrs> allPqrs = pqrsRepository.findByOficinaResponder_Id(oficinaOpt.get().getId()); // Obtener todas las PQRS
+
+            // Filtrar y agregar PQRS que pertenecen a esta oficina
+            for (Pqrs pqrs : allPqrs) {
+                if (pqrs.getOficinaResponder().getId().equals(oficina.getId())) {
+                    oficina.addPqrs(pqrs);
+                }
+            }
+        }
+
+        return oficinaOpt.map(oficinaMapper::toDto);
+    }
 }

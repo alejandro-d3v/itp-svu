@@ -15,6 +15,8 @@ import AccountService from './account/account.service';
 import { setupAxiosInterceptors } from '@/shared/config/axios-interceptor';
 import { useStore, useTranslationStore } from '@/store';
 
+import UserManagementService from '@/admin/user-management/user-management.service';
+
 import '../content/scss/global.scss';
 import '../content/scss/vendor.scss';
 import TranslationService from '@/locale/translation.service';
@@ -70,6 +72,10 @@ const app = createApp({
     const translationStore = useTranslationStore();
     const translationService = new TranslationService(i18n);
 
+    // Proveer el UserManagementService
+    const userManagementService = new UserManagementService();
+    provide('userManagementService', userManagementService);
+
     const changeLanguage = async (newLanguage: string) => {
       if (i18n.locale.value !== newLanguage) {
         await translationService.refreshTranslation(newLanguage);
@@ -79,6 +85,7 @@ const app = createApp({
 
     provide('currentLanguage', i18n.locale);
     provide('changeLanguage', changeLanguage);
+    //provide('userManagementService', new UserManagementService());
 
     watch(
       () => store.account,

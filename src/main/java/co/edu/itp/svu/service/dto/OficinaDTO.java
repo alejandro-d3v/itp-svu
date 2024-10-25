@@ -2,6 +2,7 @@ package co.edu.itp.svu.service.dto;
 
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -22,6 +23,12 @@ public class OficinaDTO implements Serializable {
 
     private String oficinaSuperior;
 
+    private UserDTO responsableDTO;
+
+    private List<PqrsDTO> pqrsList;
+
+    public OficinaDTO() {}
+
     public UserDTO getResponsableDTO() {
         return responsableDTO;
     }
@@ -30,7 +37,13 @@ public class OficinaDTO implements Serializable {
         this.responsableDTO = responsableDTO;
     }
 
-    private UserDTO responsableDTO;
+    public List<PqrsDTO> getPqrsList() {
+        return pqrsList;
+    }
+
+    public void setPqrsList(List<PqrsDTO> pqrsList) {
+        this.pqrsList = pqrsList;
+    }
 
     public String getId() {
         return id;

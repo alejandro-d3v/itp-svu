@@ -33,4 +33,8 @@ export default class UserManagementService {
   public retrieveAll(req?: any): Promise<any> {
     return axios.get(`api/admin/users`);
   }
+
+  public getUserByLogin(login: string): Promise<any> {
+    return axios.get(`api/admin/users/oficina/${login}`);
+  }
 }

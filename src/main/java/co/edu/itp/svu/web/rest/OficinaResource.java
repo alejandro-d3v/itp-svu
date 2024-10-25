@@ -180,22 +180,6 @@ public class OficinaResource {
             .body(result);
     }
 
-    /*
-    @PostMapping("/oficinas")
-    public ResponseEntity<OficinaDTO> createOficinaUser(
-        @Valid @RequestBody OficinaDTO oficinaDTO) throws URISyntaxException {
-
-        LOG.debug("REST request to save Oficina : {}", oficinaDTO);
-        if (oficinaDTO.getId() != null) {
-            throw new BadRequestAlertException("A new oficina cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-       //OficinaDTO oficina = oficinaService.createOficina(oficinaDTO, usernameResponsable);
-        OficinaDTO oficina = oficinaService.createOficina(oficinaDTO);
-        return ResponseEntity.created(new URI("/api/oficinas/" + oficinaDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, oficinaDTO.getId()))
-            .body(oficinaDTO);
-    }
-*/
     @PutMapping("/oficinas/{id}")
     public ResponseEntity<OficinaDTO> updateOficinaUser(@Valid @RequestBody OficinaDTO oficinaDTO) {
         if (!oficinaRepository.existsById(oficinaDTO.getId())) {
@@ -205,5 +189,21 @@ public class OficinaResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, oficinaDTO.getId()))
             .body(oficinaDTO);
+    }
+
+    ////////////********************Modificaciones   //////////////////////7
+    @GetMapping("/oficinas/{id}")
+    public ResponseEntity<OficinaDTO> getOficinaPqrsList(@PathVariable("id") String id) {
+        LOG.debug("REST request to get Oficina : {}", id);
+        Optional<OficinaDTO> oficinaDTO = oficinaService.getOficina(id);
+        return ResponseUtil.wrapOrNotFound(oficinaDTO);
+    }
+
+    //findByResponsable_Login
+    @GetMapping("/oficinasUser/{userId}")
+    public ResponseEntity<OficinaDTO> getOficinaUser(@PathVariable("userId") String userId) {
+        LOG.debug("REST request to get Oficina : {}", userId);
+        Optional<OficinaDTO> oficinaDTO = oficinaService.getOficinaUser(userId);
+        return ResponseUtil.wrapOrNotFound(oficinaDTO);
     }
 }

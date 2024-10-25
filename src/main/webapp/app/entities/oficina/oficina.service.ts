@@ -100,4 +100,30 @@ export default class OficinaService {
         });
     });
   }
+
+  public findOficina(id: string): Promise<IOficina> {
+    return new Promise<IOficina>((resolve, reject) => {
+      axios
+        .get(`${baseApiUrl}/oficinas/${id}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+  ////////////////////
+  public findOficinaUser(idUser: string): Promise<IOficina> {
+    return new Promise<IOficina>((resolve, reject) => {
+      axios
+        .get(`${baseApiUrl}/oficinasUser/${id}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
 }
