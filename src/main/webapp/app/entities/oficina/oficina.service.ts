@@ -113,11 +113,17 @@ export default class OficinaService {
         });
     });
   }
-  ////////////////////
-  public findOficinaUser(idUser: string): Promise<IOficina> {
+
+  /**
+   * Método para encontrar una oficina asociada a un usuario específico.
+   *
+   * @param userId - El ID del usuario para el cual se busca la oficina.
+   * @returns Una promesa que resuelve con los datos de la oficina correspondiente al usuario.
+   */
+  public findOficinaUser(userId: string): Promise<IOficina> {
     return new Promise<IOficina>((resolve, reject) => {
       axios
-        .get(`${baseApiUrl}/oficinasUser/${id}`)
+        .get(`${baseApiUrl}/oficinasUser/${userId}`)
         .then(res => {
           resolve(res.data);
         })
