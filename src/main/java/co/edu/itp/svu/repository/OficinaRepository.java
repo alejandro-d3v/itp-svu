@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OficinaRepository extends MongoRepository<Oficina, String> {
     Oficina findByResponsable_Id(String userId); // Método para encontrar Oficina por usuario
+    Oficina findByResponsable_Login(String login); // Método para encontrar Oficina por usuario
 }

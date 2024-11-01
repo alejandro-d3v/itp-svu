@@ -199,11 +199,19 @@ public class OficinaResource {
         return ResponseUtil.wrapOrNotFound(oficinaDTO);
     }
 
-    //findByResponsable_Login
+    //findByResponsable_id
     @GetMapping("/oficinasUser/{userId}")
     public ResponseEntity<OficinaDTO> getOficinaUser(@PathVariable("userId") String userId) {
         LOG.debug("REST request to get Oficina : {}", userId);
         Optional<OficinaDTO> oficinaDTO = oficinaService.getOficinaUser(userId);
+        return ResponseUtil.wrapOrNotFound(oficinaDTO);
+    }
+
+    //findByResponsable_Login
+    @GetMapping("/oficinasUserLogin/{login}")
+    public ResponseEntity<OficinaDTO> getOficinaUserLogin(@PathVariable("login") String login) {
+        LOG.debug("REST request to get Oficina : {}", login);
+        Optional<OficinaDTO> oficinaDTO = oficinaService.getOficinaUserLogin(login);
         return ResponseUtil.wrapOrNotFound(oficinaDTO);
     }
 }

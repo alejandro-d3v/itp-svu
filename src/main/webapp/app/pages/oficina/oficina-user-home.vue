@@ -1,98 +1,162 @@
+<!--
 <template>
-  <div class="oficina-home">
-    <div class="header">
-      <h1>Secretaría del Instituto Tecnológico del Putumayo</h1>
+  <div>
+    <h2 id="page-heading" data-cy="OficinaHeading">
+      <span v-text="t$('ventanillaUnicaApp.oficina.home.title')" id="oficina-heading"></span>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-info mr-2" @click="handleSyncList" :disabled="isFetching">
+          <font-awesome-icon icon="sync" :spin="isFetching"></font-awesome-icon>
+          <span v-text="t$('ventanillaUnicaApp.oficina.home.refreshListLabel')"></span>
+        </button>
+        <router-link :to="{ name: 'OficinaUserCreate' }" custom v-slot="{ navigate }">
+          <button
+            @click="navigate"
+            id="jh-create-entity"
+            data-cy="entityCreateButton"
+            class="btn btn-primary jh-create-entity create-oficina"
+          >
+            <font-awesome-icon icon="plus"></font-awesome-icon>
+            <span v-text="t$('ventanillaUnicaApp.oficina.home.createLabel')"></span>
+          </button>
+        </router-link>
+      </div>
+    </h2>
+    <br />
+    <div class="alert alert-warning" v-if="!isFetching && oficinas && oficinas.length === 0">
+      <span v-text="t$('ventanillaUnicaApp.oficina.home.notFound')"></span>
     </div>
-    <div class="oficina-info">
-      <h2>Datos de la Secretaría</h2>
-      <p><strong>Nombre:</strong> {{ oficina.nombre }}</p>
-      <p><strong>Dirección:</strong> {{ oficina.direccion }}</p>
-      <p><strong>Teléfono:</strong> {{ oficina.telefono }}</p>
+    <div class="table-responsive" v-if="oficinas && oficinas.length > 0">
+      <table class="table table-striped" aria-describedby="oficinas">
+        <thead>
+          <tr>
+            <th scope="row"><span v-text="t$('global.field.id')"></span></th>
+            <th scope="row"><span v-text="t$('ventanillaUnicaApp.oficina.nombre')"></span></th>
+            <th scope="row"><span v-text="t$('ventanillaUnicaApp.oficina.descripcion')"></span></th>
+            <th scope="row"><span v-text="t$('ventanillaUnicaApp.oficina.nivel')"></span></th>
+            <th scope="row"><span v-text="t$('ventanillaUnicaApp.oficina.oficinaSuperior')"></span></th>
+            <th scope="row"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="pqr in oficina.pqrsList" :key="pqr.id" class="pqr-item">
+            <td>
+              <router-link :to="{ name: 'OficinaView', params: { oficinaId: oficina.id } }">{{ oficina.id }}</router-link>
+            </td>
+            <td>{{ oficina.pqr.tipo }}</td>
+            <td>{{ oficina.pqr.descripcion }}</td>
+            <
+            <td class="text-right">
+              <div class="btn-group">
+                <router-link :to="{ name: 'OficinaView', params: { oficinaId: oficina.id } }" custom v-slot="{ navigate }">
+                  <button @click="navigate" class="btn btn-info btn-sm details" data-cy="entityDetailsButton">
+                    <font-awesome-icon icon="eye"></font-awesome-icon>
+                    <span class="d-none d-md-inline" v-text="t$('entity.action.view')"></span>
+                  </button>
+                </router-link>
+                <router-link :to="{ name: 'OficinaEdit', params: { oficinaId: oficina.id } }" custom v-slot="{ navigate }">
+                  <button @click="navigate" class="btn btn-primary btn-sm edit" data-cy="entityEditButton">
+                    <font-awesome-icon icon="pencil-alt"></font-awesome-icon>
+                    <span class="d-none d-md-inline" v-text="t$('entity.action.edit')"></span>
+                  </button>
+                </router-link>
+                <b-button
+                  @click="prepareRemove(oficina)"
+                  variant="danger"
+                  class="btn btn-sm"
+                  data-cy="entityDeleteButton"
+                  v-b-modal.removeEntity
+                >
+                  <font-awesome-icon icon="times"></font-awesome-icon>
+                  <span class="d-none d-md-inline" v-text="t$('entity.action.delete')"></span>
+                </b-button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <div class="pqr-list">
-      <h2>Lista de PQRS</h2>
-      <ul>
-        <li v-for="pqr in oficina.pqrsList" :key="pqr.id" class="pqr-item">
-          <strong>ID:</strong> {{ pqr.id }} - <strong>Tipo:</strong> {{ pqr.tipo }} - <strong>Descripción:</strong> {{ pqr.descripcion }}
-        </li>
-      </ul>
-    </div>
+    <b-modal ref="removeEntity" id="removeEntity">
+      <template #modal-title>
+        <span
+          id="ventanillaUnicaApp.oficina.delete.question"
+          data-cy="oficinaDeleteDialogHeading"
+          v-text="t$('entity.delete.title')"
+        ></span>
+      </template>
+      <div class="modal-body">
+        <p id="jhi-delete-oficina-heading" v-text="t$('ventanillaUnicaApp.oficina.delete.question', { id: removeId })"></p>
+      </div>
+      <template #modal-footer>
+        <div>
+          <button type="button" class="btn btn-secondary" v-text="t$('entity.action.cancel')" @click="closeDialog()"></button>
+          <button
+            type="button"
+            class="btn btn-primary"
+            id="jhi-confirm-delete-oficina"
+            data-cy="entityConfirmDeleteButton"
+            v-text="t$('entity.action.delete')"
+            @click="removeOficina()"
+          ></button>
+        </div>
+      </template>
+    </b-modal>
   </div>
 </template>
 
-<script lang="ts">
-import { type Ref, computed, defineComponent, inject, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-import { useRoute, useRouter } from 'vue-router';
-import { useVuelidate } from '@vuelidate/core';
+-->
+<template>
+  <div class="row justify-content-center">
+    <div class="col-8">
+      <form name="editForm" novalidate @submit.prevent="save()">
+        <h2 id="ventanillaUnicaApp.oficina.home.createOrEditLabel" data-cy="OficinaCreateUpdateHeading" v-text="t$('Oficina')"></h2>
+        <div>
+          <div class="oficina-info">
+            <div class="form-group" v-if="oficina.nombre">
+              <input type="text" class="form-control" id="id" name="id" v-model="oficina.nombre" readonly="true" />
+            </div>
+          </div>
 
-import OficinaService from '@/entities/oficina/oficina.service';
-import { useValidation } from '@/shared/composables';
-import { useAlertService } from '@/shared/alert/alert.service';
-//import UserService from '@/entities/user/user.service';
+          <div class="table-responsive">
+            <table class="table table-striped" aria-describedby="oficinas">
+              <thead>
+                <tr>
+                  <th scope="row"><span v-text="t$('global.field.id')"></span></th>
+                  <th scope="row"><span v-text="t$('ventanillaUnicaApp.oficina.nombre')"></span></th>
+                  <th scope="row"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="pqr in oficina.pqrsList" :key="pqr.id" class="pqr-item">
+                  <td>
+                    <router-link :to="{ name: 'PqrsView', params: { pqrsId: pqr.id } }">{{ pqr.id }}</router-link>
+                  </td>
+                  <td>{{ pqr.tipo }}</td>
+                  <td>{{ pqr.descripcion }}</td>
 
-import { type IOficina, Oficina } from '@/shared/model/oficina.model';
-import account from '@/router/account';
-
-export default defineComponent({
-  compatConfig: { MODE: 3 },
-  name: 'OficinaUserHome',
-  setup() {
-    const oficinaService = inject('oficinaService', () => new OficinaService());
-    const alertService = inject('alertService', () => useAlertService(), true);
-
-    const oficina: Ref<IOficina> = ref(new Oficina());
-    const isSaving = ref(false);
-    const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
-
-    const route = useRoute();
-    const router = useRouter();
-
-    const previousState = () => router.go(-1);
-
-    const retrieveOficina = async userId => {
-      try {
-        console.log(res);
-        const res = await oficinaService().findOficinaUser(userId);
-        //const res = await oficinaService().findOficina(oficinaByUserId);
-        oficina.value = res;
-      } catch (error) {
-        alertService.showHttpError(error.response);
-      }
-    };
-
-    if (route.params?.oficinaId) {
-      retrieveOficina(route.params.oficinaId);
-    }
-
-    const { t: t$ } = useI18n();
-    const validations = useValidation();
-    const validationRules = {
-      nombre: {
-        required: validations.required(t$('entity.validation.required').toString()),
-      },
-      descripcion: {},
-      nivel: {
-        required: validations.required(t$('entity.validation.required').toString()),
-      },
-      oficinaSuperior: {},
-    };
-    const v$ = useVuelidate(validationRules, oficina as any);
-    v$.value.$validate();
-
-    return {
-      oficinaService,
-      alertService,
-      oficina,
-      previousState,
-      isSaving,
-      currentLanguage,
-      v$,
-      t$,
-    };
-  },
-  created(): void {},
-  methods: {},
-});
-</script>
+                  <td class="text-right">
+                    <div class="btn-group">
+                      <router-link :to="{ name: 'PqrsView', params: { pqrsId: pqr.id } }" custom v-slot="{ navigate }">
+                        <button @click="navigate" class="btn btn-info btn-sm details" data-cy="entityDetailsButton">
+                          <font-awesome-icon icon="eye"></font-awesome-icon>
+                          <span class="d-none d-md-inline" v-text="t$('entity.action.view')"></span>
+                        </button>
+                      </router-link>
+                      <router-link :to="{ name: 'PqrsEdit', params: { pqrsId: pqr.id } }" custom v-slot="{ navigate }">
+                        <button @click="navigate" class="btn btn-primary btn-sm edit" data-cy="entityEditButton">
+                          <font-awesome-icon icon="pencil-alt"></font-awesome-icon>
+                          <span class="d-none d-md-inline" v-text="t$('entity.action.edit')"></span>
+                        </button>
+                      </router-link>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</template>
+-->
+<script lang="ts" src="./oficina-user-home.component.ts"></script>
