@@ -180,7 +180,6 @@ public class OficinaService {
             oficina = oficinaOptional.get();
             oficina.setNombre(oficinaDTO.getNombre());
             oficina.setOficinaSuperior(oficinaDTO.getOficinaSuperior());
-            //oficina.setNotificacions(oficinaDTO.getNotificacions());
             oficina.setDescripcion(oficinaDTO.getDescripcion());
             oficina.setNivel(oficinaDTO.getNivel());
             Optional<User> responsable = userService.getUserWithAuthoritiesByLogin(usernameResponsable);
@@ -232,5 +231,30 @@ public class OficinaService {
         }
 
         return oficinaOpt.map(oficinaMapper::toDto);
+    }
+
+    //oficina user con login
+    public Optional<OficinaDTO> getOficinaUserLogin(String login) {
+        String loginUser;
+        Optional<User> user = userService.getUserByLogin(login);
+        if (user.get() != null) {
+            Optional<Oficina> oficinaOpt = Optional.ofNullable(oficinaRepository.findByResponsable_Id(user.get().getId()));
+
+            if (oficinaOpt.isPresent()) {
+                Oficina oficina = oficinaOpt.get(); // Obtener la oficina
+                List<Pqrs> allPqrs = pqrsRepository.findByOficinaResponder_Id(oficinaOpt.get().getId()); // Obtener todas las PQRS
+
+                // Filtrar y agregar PQRS que pertenecen a esta oficina
+                for (Pqrs pqrs : allPqrs) {
+                    if (pqrs.getOficinaResponder().getId().equals(oficina.getId())) {
+                        oficina.addPqrs(pqrs);
+                    }
+                }
+                return oficinaOpt.map(oficinaMapper::toDto);
+            }
+        }
+        Optional<Oficina> of = Optional.of(new Oficina());
+        of.get().setId("");
+        return of.map(oficinaMapper::toDto);
     }
 }

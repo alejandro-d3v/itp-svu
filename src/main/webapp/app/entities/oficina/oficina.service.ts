@@ -126,4 +126,18 @@ export default class OficinaService {
         });
     });
   }
+
+  //oficinas/oficinasUserLogin/erika
+  public findOficinaUserLogin(login: string): Promise<IOficina> {
+    return new Promise<IOficina>((resolve, reject) => {
+      axios
+        .get(`${baseApiUrl}/oficinasUserLogin/${login}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
 }
