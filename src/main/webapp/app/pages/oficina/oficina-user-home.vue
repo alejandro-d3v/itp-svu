@@ -40,7 +40,7 @@
                     <td class="align-middle text-center">
                       <router-link
                         :to="{
-                          name: 'PqrsView',
+                          name: 'OficinaUserAnswerPqrs',
                           params: { pqrsId: pqr.id },
                         }"
                         custom

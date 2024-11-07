@@ -1,13 +1,10 @@
-/* tslint:disable */
-// prettier-ignore
-
 import { Authority } from '@/shared/security/authority';
 
 const OficinaUserCreate = () => import('@/pages/oficina/oficina-user-create.vue');
 const OficinaUserHome = () => import('@/pages/oficina/oficina-user-home.vue');
+const OficinaUserAnswerPqrs = () => import('@/pages/oficina/oficina-user-answer-pqrs.vue');
 
 export default [
-  // jhipster-needle-add-entity-to-router - JHipster will add entities to the router here
   {
     path: '/oficina-user/create',
     name: 'OficinaUserCreate',
@@ -20,6 +17,13 @@ export default [
     //path: '/oficina-user/home',
     name: 'OficinaUserHome',
     component: OficinaUserHome,
+    meta: { authorities: [Authority.USER] },
+  },
+
+  {
+    path: '/oficina-user/:userId/home/:pqrsId/answer-pqrs',
+    name: 'OficinaUserAnswerPqrs',
+    component: OficinaUserAnswerPqrs,
     meta: { authorities: [Authority.USER] },
   },
 ];
