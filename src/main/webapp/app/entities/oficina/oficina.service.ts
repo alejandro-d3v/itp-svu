@@ -2,7 +2,8 @@ import axios from 'axios';
 
 import type { IPqrs } from '@/shared/model/pqrs.model';
 import { type IOficina } from '@/shared/model/oficina.model';
-import type { IParamsPag, IResponsePag } from '@/shared/interfaces/pagination.interface';
+import type { IResponsePag } from '@/shared/interfaces/pagination.interface';
+import type { IParamsPqrsPag } from '@/entities/interfaces/pqrs.interface';
 
 const baseApiUrl = 'api/oficinas';
 
@@ -145,7 +146,9 @@ export default class OficinaService {
    *
    * @throws Error si la solicitud a la API falla.
    */
-  public findPqrsByUserIdWithPag(userId: string, params?: IParamsPag): Promise<IResponsePag<IPqrs>> {
+  public findPqrsByUserIdWithPag(params?: IParamsPqrsPag): Promise<IResponsePag<IPqrs>> {
+    const userId: string = `${params?.userId}`;
+
     return new Promise<any>((resolve, reject) => {
       axios
         .get(`${baseApiUrl}/${userId}/pqrs-with-pagination`, { params })
