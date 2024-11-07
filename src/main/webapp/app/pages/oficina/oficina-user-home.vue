@@ -12,61 +12,45 @@
                   <th scope="row">
                     <span>{{ t$('ventanillaUnicaApp.pqrs.id') }}</span>
                   </th>
-                  <th scope="row">
+                  <th scope="row" class="col-3">
                     <span>{{ t$('ventanillaUnicaApp.pqrs.titulo') }}</span>
                   </th>
                   <th scope="row">
                     <span>{{ t$('ventanillaUnicaApp.pqrs.descripcion') }}</span>
                   </th>
-                  <th scope="row"></th>
+                  <th scope="row" class="col-2"></th>
                 </tr>
               </thead>
 
               <tbody>
                 <template v-for="(pqr, index) in data" :key="pqr.id">
                   <tr class="pqr-item">
-                    <td>
+                    <td class="align-middle">
                       <router-link
                         :to="{
                           name: 'PqrsView',
                           params: { pqrsId: pqr.id },
                         }"
-                        >{{ pqr.id }}</router-link
+                        >{{ truncateText(pqr.id, 7) }}</router-link
                       >
                     </td>
-                    <td>{{ pqr.titulo }}</td>
-                    <td>{{ pqr.descripcion }}</td>
+                    <td class="align-middle">{{ truncateText(pqr.titulo, 60) }}</td>
+                    <td>{{ truncateText(pqr.descripcion, 190) }}</td>
 
-                    <td class="text-right">
-                      <div class="btn-group">
-                        <router-link
-                          :to="{
-                            name: 'PqrsView',
-                            params: { pqrsId: pqr.id },
-                          }"
-                          custom
-                          v-slot="{ navigate }"
-                        >
-                          <button class="btn btn-info btn-sm details" data-cy="entityDetailsButton" @click="navigate">
-                            <font-awesome-icon icon="eye" />
-                            <span class="d-none d-md-inline" v-text="t$('entity.action.view')" />
-                          </button>
-                        </router-link>
-
-                        <router-link
-                          :to="{
-                            name: 'PqrsEdit',
-                            params: { pqrsId: pqr.id },
-                          }"
-                          custom
-                          v-slot="{ navigate }"
-                        >
-                          <button class="btn btn-primary btn-sm edit" data-cy="entityEditButton" @click="navigate">
-                            <font-awesome-icon icon="pencil-alt" />
-                            <span class="d-none d-md-inline" v-text="t$('entity.action.edit')" />
-                          </button>
-                        </router-link>
-                      </div>
+                    <td class="align-middle text-center">
+                      <router-link
+                        :to="{
+                          name: 'PqrsView',
+                          params: { pqrsId: pqr.id },
+                        }"
+                        custom
+                        v-slot="{ navigate }"
+                      >
+                        <button class="btn btn-info btn-sm details" data-cy="entityDetailsButton" @click="navigate">
+                          <font-awesome-icon icon="eye" />
+                          <span class="d-none d-md-inline" v-text="t$('entity.action.view')" />
+                        </button>
+                      </router-link>
                     </td>
                   </tr>
                 </template>
@@ -132,6 +116,14 @@ export default defineComponent({
       }
     };
 
+    const truncateText = (txt: string, limit: number) => {
+      if (txt.length > limit) {
+        return txt.substring(0, limit) + '...';
+      }
+
+      return txt;
+    };
+
     return {
       t$,
       route,
@@ -139,6 +131,8 @@ export default defineComponent({
       oficina,
 
       oficinaService,
+
+      truncateText,
     };
   },
 });
