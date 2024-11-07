@@ -1,33 +1,83 @@
 <template>
-  <div class="oficina-home">
-    <div class="header">
-      <h1>Secretaría del Instituto Tecnológico del Putumayo</h1>
-    </div>
+  <div class="row justify-content-center">
+    <div class="col-8">
+      <h2>{{ t$('Oficina') }}: {{ oficina.nombre ?? '---' }}</h2>
 
-    <div class="oficina-info">
-      <h2>Datos de la Secretaría</h2>
-      <p><strong>Nombre:</strong> {{ oficina.nombre }}</p>
-      <p><strong>Dirección:</strong> {{ oficina.direccion }}</p>
-      <p><strong>Teléfono:</strong> {{ oficina.telefono }}</p>
-    </div>
+      <div>
+        <div class="table-responsive">
+          <table class="table table-striped" aria-describedby="oficinas">
+            <thead>
+              <tr>
+                <th scope="row">
+                  <span>{{ t$('global.field.id') }}</span>
+                </th>
+                <th scope="row">
+                  <span>{{ t$('ventanillaUnicaApp.oficina.nombre') }}</span>
+                </th>
+                <th scope="row"></th>
+              </tr>
+            </thead>
 
-    <div class="pqr-list">
-      <h2>Lista de PQRS</h2>
+            <tbody>
+              <template v-for="pqr in oficina.pqrsList" :key="pqr.id">
+                <tr class="pqr-item">
+                  <td>
+                    <router-link
+                      :to="{
+                        name: 'PqrsView',
+                        params: { pqrsId: pqr.id },
+                      }"
+                      >{{ pqr.id }}</router-link
+                    >
+                  </td>
+                  <td>{{ pqr.titulo }}</td>
+                  <td>{{ pqr.descripcion }}</td>
 
-      <ul>
-        <li v-for="pqr in oficina.pqrsList" :key="pqr.id" class="pqr-item">
-          <div><strong>ID:</strong> {{ pqr.id }}</div>
-          <div><strong>Tipo:</strong> {{ pqr.tipo }}</div>
-          <div><strong>Descripción:</strong> {{ pqr.descripcion }}</div>
-        </li>
-      </ul>
+                  <td class="text-right">
+                    <div class="btn-group">
+                      <router-link
+                        :to="{
+                          name: 'PqrsView',
+                          params: { pqrsId: pqr.id },
+                        }"
+                        custom
+                        v-slot="{ navigate }"
+                      >
+                        <button class="btn btn-info btn-sm details" data-cy="entityDetailsButton" @click="navigate">
+                          <font-awesome-icon icon="eye" />
+                          <span class="d-none d-md-inline" v-text="t$('entity.action.view')" />
+                        </button>
+                      </router-link>
+
+                      <router-link
+                        :to="{
+                          name: 'PqrsEdit',
+                          params: { pqrsId: pqr.id },
+                        }"
+                        custom
+                        v-slot="{ navigate }"
+                      >
+                        <button class="btn btn-primary btn-sm edit" data-cy="entityEditButton" @click="navigate">
+                          <font-awesome-icon icon="pencil-alt" />
+                          <span class="d-none d-md-inline" v-text="t$('entity.action.edit')" />
+                        </button>
+                      </router-link>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { type Ref, computed, defineComponent, inject, ref, onMounted } from 'vue';
+import { type Ref, defineComponent, inject, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 
 import { type IOficina, Oficina } from '@/shared/model/oficina.model';
 
@@ -39,6 +89,7 @@ export default defineComponent({
   name: 'OficinaUserHome',
 
   setup() {
+    const { t: t$ } = useI18n();
     const route = useRoute();
 
     const oficinaService = new OficinaService();
@@ -46,7 +97,6 @@ export default defineComponent({
     const alertService = inject('alertService', () => useAlertService(), true);
 
     const oficina: Ref<IOficina> = ref(new Oficina());
-    const currentLanguage = inject('currentLanguage', () => computed(() => navigator.language ?? 'es'), true);
 
     onMounted(() => {
       loadOficina();
@@ -57,16 +107,18 @@ export default defineComponent({
 
       try {
         const response = await oficinaService.findOficinaUser(userId);
-        console.log('Oficina encontrada:', response);
         oficina.value = response;
-      } catch (error) {
+
+        const response2 = await oficinaService.findPqrsByUserIdWithPag(userId); // service with pag
+        console.log('res 2', response2);
+      } catch (error: any) {
         console.error('retrieveOficina err:', error);
         alertService.showHttpError(error.response);
       }
     };
 
     const loadOficina = () => {
-      const userId = route.params.userId;
+      const userId = `${route.params.userId}`;
 
       if (userId) {
         retrieveOficina(userId);
@@ -74,9 +126,9 @@ export default defineComponent({
     };
 
     return {
-      alertService,
+      t$,
+
       oficina,
-      currentLanguage,
     };
   },
 });

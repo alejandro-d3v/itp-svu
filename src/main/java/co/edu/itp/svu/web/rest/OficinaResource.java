@@ -1,11 +1,9 @@
 package co.edu.itp.svu.web.rest;
 
-import co.edu.itp.svu.domain.Oficina;
 import co.edu.itp.svu.repository.OficinaRepository;
 import co.edu.itp.svu.service.OficinaService;
 import co.edu.itp.svu.service.dto.OficinaDTO;
-import co.edu.itp.svu.service.mapper.ArchivoAdjuntoMapper;
-import co.edu.itp.svu.service.mapper.OficinaMapper;
+import co.edu.itp.svu.service.dto.PqrsDTO;
 import co.edu.itp.svu.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +15,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tech.jhipster.web.util.HeaderUtil;
@@ -29,16 +30,14 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/oficinas")
 public class OficinaResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OficinaResource.class);
-
-    private static final String ENTITY_NAME = "oficina";
-
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final OficinaService oficinaService;
+    private static final Logger LOG = LoggerFactory.getLogger(OficinaResource.class);
+    private static final String ENTITY_NAME = "oficina";
 
     private final OficinaRepository oficinaRepository;
+    private final OficinaService oficinaService;
 
     public OficinaResource(OficinaService oficinaService, OficinaRepository oficinaRepository) {
         this.oficinaService = oficinaService;
@@ -49,7 +48,9 @@ public class OficinaResource {
      * {@code POST  /oficinas} : Create a new oficina.
      *
      * @param oficinaDTO the oficinaDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new oficinaDTO, or with status {@code 400 (Bad Request)} if the oficina has already an ID.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
+     *         body the new oficinaDTO, or with status {@code 400 (Bad Request)} if
+     *         the oficina has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
@@ -67,11 +68,14 @@ public class OficinaResource {
     /**
      * {@code PUT  /oficinas/:id} : Updates an existing oficina.
      *
-     * @param id the id of the oficinaDTO to save.
+     * @param id         the id of the oficinaDTO to save.
      * @param oficinaDTO the oficinaDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated oficinaDTO,
-     * or with status {@code 400 (Bad Request)} if the oficinaDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the oficinaDTO couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated oficinaDTO,
+     *         or with status {@code 400 (Bad Request)} if the oficinaDTO is not
+     *         valid,
+     *         or with status {@code 500 (Internal Server Error)} if the oficinaDTO
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
@@ -98,14 +102,19 @@ public class OficinaResource {
     }
 
     /**
-     * {@code PATCH  /oficinas/:id} : Partial updates given fields of an existing oficina, field will ignore if it is null
+     * {@code PATCH  /oficinas/:id} : Partial updates given fields of an existing
+     * oficina, field will ignore if it is null
      *
-     * @param id the id of the oficinaDTO to save.
+     * @param id         the id of the oficinaDTO to save.
      * @param oficinaDTO the oficinaDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated oficinaDTO,
-     * or with status {@code 400 (Bad Request)} if the oficinaDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the oficinaDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the oficinaDTO couldn't be updated.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the updated oficinaDTO,
+     *         or with status {@code 400 (Bad Request)} if the oficinaDTO is not
+     *         valid,
+     *         or with status {@code 404 (Not Found)} if the oficinaDTO is not
+     *         found,
+     *         or with status {@code 500 (Internal Server Error)} if the oficinaDTO
+     *         couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
@@ -136,7 +145,8 @@ public class OficinaResource {
     /**
      * {@code GET  /oficinas} : get all the oficinas.
      *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of oficinas in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+     *         of oficinas in body.
      */
     @GetMapping("")
     public List<OficinaDTO> getAllOficinas() {
@@ -148,7 +158,8 @@ public class OficinaResource {
      * {@code GET  /oficinas/:id} : get the "id" oficina.
      *
      * @param id the id of the oficinaDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the oficinaDTO, or with status {@code 404 (Not Found)}.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
+     *         the oficinaDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
     public ResponseEntity<OficinaDTO> getOficina(@PathVariable("id") String id) {
@@ -170,8 +181,6 @@ public class OficinaResource {
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
 
-    ////Modificaciones aqui//////////////////////////
-
     @PostMapping("/oficinas")
     public ResponseEntity<OficinaDTO> createOficinaUser(@Valid @RequestBody OficinaDTO oficinaDTO) throws URISyntaxException {
         OficinaDTO result = oficinaService.createOficina(oficinaDTO);
@@ -191,7 +200,6 @@ public class OficinaResource {
             .body(oficinaDTO);
     }
 
-    ////////////********************Modificaciones   //////////////////////7
     @GetMapping("/oficinas/{id}")
     public ResponseEntity<OficinaDTO> getOficinaPqrsList(@PathVariable("id") String id) {
         LOG.debug("REST request to get Oficina : {}", id);
@@ -199,11 +207,38 @@ public class OficinaResource {
         return ResponseUtil.wrapOrNotFound(oficinaDTO);
     }
 
-    //findByResponsable_Login
+    // findByResponsable_Login
     @GetMapping("/oficinasUser/{userId}")
     public ResponseEntity<OficinaDTO> getOficinaUser(@PathVariable("userId") String userId) {
         LOG.debug("REST request to get Oficina : {}", userId);
         Optional<OficinaDTO> oficinaDTO = oficinaService.getOficinaUser(userId);
         return ResponseUtil.wrapOrNotFound(oficinaDTO);
+    }
+
+    /**
+     * {@code GET  /{userId}/pqrs-with-pagination} : Retrieves a paginated list of PQRS
+     * associated with a specific user.
+     *
+     * @param userId The ID of the user for whom the PQRS records are being retrieved.
+     * @param order Optional parameter to specify the order of the results.
+     * @param page Optional parameter to specify the page number to retrieve (1-based index).
+     * @param perPage Optional parameter to specify the number of records per page.
+     * @param search Optional parameter to filter the results based on a search term.
+     * @return A {@link ResponseEntity} containing a {@link Page} of PqrsDTO objects
+     *         with status {@code 200 (OK)} if the request is successful.
+     */
+    @GetMapping("/{userId}/pqrs-with-pagination")
+    public ResponseEntity<Page<PqrsDTO>> getPqrsByUserIdWithPagination(
+        @PathVariable String userId,
+        @RequestParam(required = false) String order,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer perPage,
+        @RequestParam(required = false) String search
+    ) {
+        Pageable pageable = PageRequest.of(page != null ? page - 1 : 0, perPage != null ? perPage : 10);
+
+        Page<PqrsDTO> result = oficinaService.findPqrsByUserIdWithPagination(userId, order, pageable, search);
+
+        return ResponseEntity.ok(result);
     }
 }

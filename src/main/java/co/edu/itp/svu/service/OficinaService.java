@@ -6,13 +6,17 @@ import co.edu.itp.svu.domain.User;
 import co.edu.itp.svu.repository.OficinaRepository;
 import co.edu.itp.svu.repository.PqrsRepository;
 import co.edu.itp.svu.service.dto.OficinaDTO;
+import co.edu.itp.svu.service.dto.PqrsDTO;
 import co.edu.itp.svu.service.mapper.OficinaMapper;
+import co.edu.itp.svu.service.mapper.PqrsMapper;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,21 +30,23 @@ public class OficinaService {
     private UserService userService;
 
     private final OficinaRepository oficinaRepository;
-
     private final PqrsRepository pqrsRepository;
-
     private final OficinaMapper oficinaMapper;
+    private final PqrsMapper pqrsMapper;
 
     public OficinaService(
         OficinaRepository oficinaRepository,
+        PqrsRepository pqrsRepository,
         OficinaMapper oficinaMapper,
-        UserService userService,
-        PqrsRepository pqrsRepository
+        PqrsMapper pqrsMapper,
+        UserService userService
     ) {
         this.oficinaRepository = oficinaRepository;
-        this.oficinaMapper = oficinaMapper;
-        this.userService = userService;
         this.pqrsRepository = pqrsRepository;
+        this.oficinaMapper = oficinaMapper;
+        this.pqrsMapper = pqrsMapper;
+
+        this.userService = userService;
     }
 
     /**
@@ -119,8 +125,6 @@ public class OficinaService {
         LOG.debug("Request to delete Oficina : {}", id);
         oficinaRepository.deleteById(id);
     }
-
-    /////////////////modificaciones////////////////////////////////////////7
 
     public OficinaDTO createOficina(OficinaDTO oficinaDTO) {
         LOG.debug("Request to save Oficina : {}", oficinaDTO);
@@ -215,7 +219,6 @@ public class OficinaService {
         return oficinaOpt.map(oficinaMapper::toDto);
     }
 
-    ////////////////777
     public Optional<OficinaDTO> getOficinaUser(String id) {
         Optional<Oficina> oficinaOpt = Optional.ofNullable(oficinaRepository.findByResponsable_Id(id));
 
@@ -232,5 +235,38 @@ public class OficinaService {
         }
 
         return oficinaOpt.map(oficinaMapper::toDto);
+    }
+
+    /**
+     * Obtiene una lista paginada de PQRS asociadas a un usuario específico.
+     *
+     * @param userId El ID del usuario para el cual se buscan las PQRS.
+     * @param order Parámetro opcional para especificar el orden de los resultados.
+     * @param pageable Información de paginación que incluye el número de página y el tamaño de la página.
+     * @param search Término de búsqueda opcional para filtrar las PQRS por título o descripción.
+     * @return Una página de objetos PqrsDTO que representan las PQRS asociadas al usuario.
+     *         Si no se encuentra la oficina, se retorna una página vacía.
+     */
+    public Page<PqrsDTO> findPqrsByUserIdWithPagination(String userId, String order, Pageable pageable, String search) {
+        Optional<Oficina> oficinaOpt = Optional.ofNullable(oficinaRepository.findByResponsable_Id(userId));
+
+        if (oficinaOpt.isPresent()) {
+            Oficina oficina = oficinaOpt.get();
+
+            // Obtener PQRS paginados
+            Page<Pqrs> pqrsPage = pqrsRepository.findByOficinaResponder_Id(oficina.getId(), pageable);
+
+            // filtrar por título o descripción si 'search' no es nulo
+            // if (search != null && !search.isEmpty()) {
+            //   pqrsPage = pqrsPage.filter(pqrs ->
+            //     pqrs.getTitulo().contains(search) ||
+            //     pqrs.getDescripcion().contains(search)
+            //   );
+            // }
+
+            return pqrsPage.map(pqrsMapper::toDto);
+        }
+
+        return Page.empty();
     }
 }

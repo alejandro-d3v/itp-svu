@@ -1,6 +1,8 @@
 import axios from 'axios';
 
+import type { IPqrs } from '@/shared/model/pqrs.model';
 import { type IOficina } from '@/shared/model/oficina.model';
+import type { IParamsPag, IResponsePag } from '@/shared/interfaces/pagination.interface';
 
 const baseApiUrl = 'api/oficinas';
 
@@ -126,6 +128,36 @@ export default class OficinaService {
         .get(`${baseApiUrl}/oficinasUser/${userId}`)
         .then(res => {
           resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  /**
+   * Método para obtener PQRS asociados a un usuario específico con paginación.
+   *
+   * @param userId - El ID del usuario para el cual se buscan los PQRS.
+   * @param params - Parámetros opcionales para la paginación.
+   * @returns Una promesa que resuelve con un objeto de tipo IResponsePag<IPqrs>,
+   *          que contiene los datos de PQRS paginados.
+   *
+   * @throws Error si la solicitud a la API falla.
+   */
+  public findPqrsByUserIdWithPag(userId: string, params?: IParamsPag): Promise<IResponsePag<IPqrs>> {
+    return new Promise<any>((resolve, reject) => {
+      axios
+        .get(`${baseApiUrl}/${userId}/pqrs-with-pagination`, { params })
+        .then(res => {
+          const response: IResponsePag<IPqrs> = {
+            data: res.data.content,
+            page: res.data.number + 1,
+            perPage: res.data.size,
+            total: res.data.totalElements,
+          };
+
+          resolve(response);
         })
         .catch(err => {
           reject(err);
