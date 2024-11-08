@@ -4,7 +4,9 @@ import co.edu.itp.svu.domain.Respuesta;
 import co.edu.itp.svu.repository.RespuestaRepository;
 import co.edu.itp.svu.service.dto.RespuestaDTO;
 import co.edu.itp.svu.service.mapper.RespuestaMapper;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -104,5 +106,10 @@ public class RespuestaService {
     public void delete(String id) {
         LOG.debug("Request to delete Respuesta : {}", id);
         respuestaRepository.deleteById(id);
+    }
+
+    public Optional<RespuestaDTO> findByPqrsId(String pqrsId) {
+        LOG.debug("Request to get respuestas by Pqrs ID : {}", pqrsId);
+        return respuestaRepository.findByPqrId(pqrsId).stream().map(respuestaMapper::toDto).reduce((first, second) -> second);
     }
 }

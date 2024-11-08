@@ -174,4 +174,11 @@ public class RespuestaResource {
         respuestaService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
     }
+
+    @GetMapping("/pqrs/{pqrsId}")
+    public ResponseEntity<RespuestaDTO> getAnswerByPqrsId(@PathVariable String pqrsId) {
+        LOG.debug("REST request to get respuestas by Pqrs ID : {}", pqrsId);
+        Optional<RespuestaDTO> respuesta = respuestaService.findByPqrsId(pqrsId);
+        return ResponseUtil.wrapOrNotFound(respuesta);
+    }
 }

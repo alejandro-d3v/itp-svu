@@ -43,7 +43,12 @@
 
           <dt>{{ t$('Respuesta') }}</dt>
           <dd>
-            <b-form-textarea v-model="txtanswer" placeholder="Responde algo..." rows="3" max-rows="6"></b-form-textarea>
+            <b-form-textarea v-model="txtAnswer" placeholder="Responde algo..." rows="3" max-rows="6"></b-form-textarea>
+          </dd>
+
+          <dt>{{ t$('Estado de respuesta') }}</dt>
+          <dd>
+            <input type="text" class="form-control" v-model="statusAnswer" />
           </dd>
         </dl>
 
@@ -70,6 +75,7 @@ import { useDateFormat } from '@/shared/composables';
 import type { IRespuesta } from '@/shared/model/respuesta.model';
 import type { IPqrs } from '@/shared/model/pqrs.model';
 
+import RespuestaService from '@/entities/respuesta/respuesta.service';
 import { useAlertService } from '@/shared/alert/alert.service';
 import PqrsService from '@/entities/pqrs/pqrs.service';
 
@@ -83,17 +89,18 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
+    const respuestaService = new RespuestaService();
     const pqrsService = new PqrsService();
 
     const alertService = inject('alertService', () => useAlertService(), true);
 
-    const userId: Ref<string> = ref(`${route.params.userId}`);
     const pqrsId: Ref<string> = ref(`${route.params.pqrsId}`);
 
     const pqrs: Ref<IPqrs> = ref({});
     const answer: Ref<IRespuesta> = ref({});
 
-    const txtanswer: Ref<string> = ref('');
+    const txtAnswer: Ref<string> = ref('');
+    const statusAnswer: Ref<string> = ref('');
 
     const loading: Ref<boolean> = ref(true);
 
@@ -111,16 +118,46 @@ export default defineComponent({
         alertService.showHttpError(error.response);
       }
     };
-    const getAnswer = () => {
-      console.log('getAnswer', userId.value);
+    const getAnswer = async () => {
+      try {
+        answer.value = await respuestaService.getAnswerByPqrsId(pqrsId.value);
+        txtAnswer.value = answer.value.contenido ?? '';
+        statusAnswer.value = answer.value.estado ?? '';
+      } catch (error: any) {
+        txtAnswer.value = '';
+        statusAnswer.value = '';
+      }
     };
 
     const previousState = () => {
       router.go(-1);
     };
 
-    const sendAnswer = () => {
-      console.log('sendAnswer', txtanswer.value);
+    const sendAnswer = async () => {
+      try {
+        if (answer.value.id) {
+          answer.value.contenido = txtAnswer.value;
+          answer.value.estado = statusAnswer.value;
+          answer.value.pqr = pqrs.value;
+
+          await respuestaService.update(answer.value);
+
+          alertService.showInfo(t$('ventanillaUnicaApp.respuesta.updated', { param: answer.value.id }));
+        } else {
+          const dataSend: any = {
+            contenido: txtAnswer.value,
+            fechaRespuesta: new Date(),
+            estado: statusAnswer.value,
+            pqr: pqrs.value,
+          };
+
+          await respuestaService.create(dataSend);
+          alertService.showSuccess(t$('ventanillaUnicaApp.respuesta.created').toString());
+          location.reload();
+        }
+      } catch (error: any) {
+        alertService.showHttpError(error.response);
+      }
     };
 
     return {
@@ -131,7 +168,8 @@ export default defineComponent({
 
       pqrs,
       answer,
-      txtanswer,
+      txtAnswer,
+      statusAnswer,
 
       sendAnswer,
       previousState,

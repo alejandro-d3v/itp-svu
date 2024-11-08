@@ -84,4 +84,17 @@ export default class RespuestaService {
         });
     });
   }
+
+  public getAnswerByPqrsId(pqrsId: string): Promise<IRespuesta> {
+    return new Promise<IRespuesta>((resolve, reject) => {
+      axios
+        .get(`${baseApiUrl}/pqrs/${pqrsId}`)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
 }
