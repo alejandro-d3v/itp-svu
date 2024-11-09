@@ -37,18 +37,18 @@ export default defineComponent({
 
     const previousState = () => router.go(-1);
 
-    const retrieveArchivoAdjunto = async archivoAdjuntoId => {
+    const retrieveArchivoAdjunto = async (archivoAdjuntoId: string) => {
       try {
         const res = await archivoAdjuntoService().find(archivoAdjuntoId);
-        res.fechaSubida = new Date(res.fechaSubida);
+        res.fechaSubida = new Date(res.fechaSubida ?? '');
         archivoAdjunto.value = res;
-      } catch (error) {
+      } catch (error: any) {
         alertService.showHttpError(error.response);
       }
     };
 
     if (route.params?.archivoAdjuntoId) {
-      retrieveArchivoAdjunto(route.params.archivoAdjuntoId);
+      retrieveArchivoAdjunto(route.params.archivoAdjuntoId as string);
     }
 
     const initRelationships = () => {
@@ -69,21 +69,79 @@ export default defineComponent({
     const { t: t$ } = useI18n();
     const validations = useValidation();
     const validationRules = {
-      nombre: {
-        required: validations.required(t$('entity.validation.required').toString()),
-      },
-      tipo: {
-        required: validations.required(t$('entity.validation.required').toString()),
-      },
+      file: { required: validations.required(t$('entity.validation.required').toString()) },
+
+      nombre: {},
+      tipo: {},
       urlArchivo: {},
-      fechaSubida: {
-        required: validations.required(t$('entity.validation.required').toString()),
-      },
+      fechaSubida: {},
+
       pqrs: {},
       respuesta: {},
     };
     const v$ = useVuelidate(validationRules, archivoAdjunto as any);
     v$.value.$validate();
+
+    const onFileChange = (event: any) => {
+      const file = event.target.files[0];
+      if (file) {
+        v$.value.file.$model = file;
+        archivoAdjunto.value.file = file;
+        archivoAdjunto.value.nombre = file.name;
+        archivoAdjunto.value.tipo = file.type;
+      }
+    };
+
+    const save = (): void => {
+      isSaving.value = true;
+
+      const formData = new FormData();
+
+      if (archivoAdjunto.value.file) {
+        formData.append('file', archivoAdjunto.value.file as Blob);
+      }
+      if (archivoAdjunto.value.nombre) {
+        formData.append('nombre', archivoAdjunto.value.nombre);
+      }
+      if (archivoAdjunto.value.tipo) {
+        formData.append('tipo', archivoAdjunto.value.tipo);
+      }
+      if (archivoAdjunto.value.urlArchivo) {
+        formData.append('urlArchivo', archivoAdjunto.value.urlArchivo);
+      }
+      if (archivoAdjunto.value.pqrs?.id) {
+        formData.append('pqrsId', archivoAdjunto.value.pqrs.id);
+      }
+      if (archivoAdjunto.value.respuesta?.id) {
+        formData.append('respuestaId', archivoAdjunto.value.respuesta.id);
+      }
+
+      if (archivoAdjunto.value.id) {
+        archivoAdjuntoService()
+          .update(formData, archivoAdjunto.value.id)
+          .then(param => {
+            isSaving.value = false;
+            previousState();
+            alertService.showInfo(t$('ventanillaUnicaApp.archivoAdjunto.updated', { param: param.id }));
+          })
+          .catch(error => {
+            isSaving.value = false;
+            alertService.showHttpError(error.response);
+          });
+      } else {
+        archivoAdjuntoService()
+          .create(formData)
+          .then(param => {
+            isSaving.value = false;
+            previousState();
+            alertService.showSuccess(t$('ventanillaUnicaApp.archivoAdjunto.created', { param: param.id }).toString());
+          })
+          .catch(error => {
+            isSaving.value = false;
+            alertService.showHttpError(error.response);
+          });
+      }
+    };
 
     return {
       archivoAdjuntoService,
@@ -94,40 +152,12 @@ export default defineComponent({
       currentLanguage,
       pqrs,
       respuestas,
+      onFileChange,
+      save,
       v$,
       ...useDateFormat({ entityRef: archivoAdjunto }),
       t$,
     };
   },
   created(): void {},
-  methods: {
-    save(): void {
-      this.isSaving = true;
-      if (this.archivoAdjunto.id) {
-        this.archivoAdjuntoService()
-          .update(this.archivoAdjunto)
-          .then(param => {
-            this.isSaving = false;
-            this.previousState();
-            this.alertService.showInfo(this.t$('ventanillaUnicaApp.archivoAdjunto.updated', { param: param.id }));
-          })
-          .catch(error => {
-            this.isSaving = false;
-            this.alertService.showHttpError(error.response);
-          });
-      } else {
-        this.archivoAdjuntoService()
-          .create(this.archivoAdjunto)
-          .then(param => {
-            this.isSaving = false;
-            this.previousState();
-            this.alertService.showSuccess(this.t$('ventanillaUnicaApp.archivoAdjunto.created', { param: param.id }).toString());
-          })
-          .catch(error => {
-            this.isSaving = false;
-            this.alertService.showHttpError(error.response);
-          });
-      }
-    },
-  },
 });

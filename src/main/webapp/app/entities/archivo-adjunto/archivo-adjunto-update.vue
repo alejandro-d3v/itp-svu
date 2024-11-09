@@ -2,16 +2,31 @@
   <div class="row justify-content-center">
     <div class="col-8">
       <form name="editForm" novalidate @submit.prevent="save()">
-        <h2
-          id="ventanillaUnicaApp.archivoAdjunto.home.createOrEditLabel"
-          data-cy="ArchivoAdjuntoCreateUpdateHeading"
-          v-text="t$('ventanillaUnicaApp.archivoAdjunto.home.createOrEditLabel')"
-        ></h2>
+        <h2 id="ventanillaUnicaApp.archivoAdjunto.home.createOrEditLabel" data-cy="ArchivoAdjuntoCreateUpdateHeading">
+          {{ t$('ventanillaUnicaApp.archivoAdjunto.home.createOrEditLabel') }}
+        </h2>
+
         <div>
           <div class="form-group" v-if="archivoAdjunto.id">
             <label for="id" v-text="t$('global.field.id')"></label>
             <input type="text" class="form-control" id="id" name="id" v-model="archivoAdjunto.id" readonly />
           </div>
+
+          <div class="form-group">
+            <label class="form-control-label" v-text="t$('Adjuntar archivo')" for="archivo-adjunto-file"></label>
+            <input
+              type="file"
+              class="form-control"
+              id="archivo-adjunto-file"
+              data-cy="file"
+              :class="{ valid: !v$.file.$invalid, invalid: v$.file.$invalid }"
+              @change="onFileChange"
+            />
+            <div v-if="v$.file.$anyDirty && v$.file.$invalid">
+              <small class="form-text text-danger" v-for="error of v$.file.$errors" :key="error.$uid">{{ error.$message }}</small>
+            </div>
+          </div>
+
           <div class="form-group">
             <label class="form-control-label" v-text="t$('ventanillaUnicaApp.archivoAdjunto.nombre')" for="archivo-adjunto-nombre"></label>
             <input
@@ -28,6 +43,7 @@
               <small class="form-text text-danger" v-for="error of v$.nombre.$errors" :key="error.$uid">{{ error.$message }}</small>
             </div>
           </div>
+
           <div class="form-group">
             <label class="form-control-label" v-text="t$('ventanillaUnicaApp.archivoAdjunto.tipo')" for="archivo-adjunto-tipo"></label>
             <input
@@ -44,6 +60,7 @@
               <small class="form-text text-danger" v-for="error of v$.tipo.$errors" :key="error.$uid">{{ error.$message }}</small>
             </div>
           </div>
+
           <div class="form-group">
             <label
               class="form-control-label"
@@ -60,29 +77,7 @@
               v-model="v$.urlArchivo.$model"
             />
           </div>
-          <div class="form-group">
-            <label
-              class="form-control-label"
-              v-text="t$('ventanillaUnicaApp.archivoAdjunto.fechaSubida')"
-              for="archivo-adjunto-fechaSubida"
-            ></label>
-            <div class="d-flex">
-              <input
-                id="archivo-adjunto-fechaSubida"
-                data-cy="fechaSubida"
-                type="datetime-local"
-                class="form-control"
-                name="fechaSubida"
-                :class="{ valid: !v$.fechaSubida.$invalid, invalid: v$.fechaSubida.$invalid }"
-                required
-                :value="convertDateTimeFromServer(v$.fechaSubida.$model)"
-                @change="updateInstantField('fechaSubida', $event)"
-              />
-            </div>
-            <div v-if="v$.fechaSubida.$anyDirty && v$.fechaSubida.$invalid">
-              <small class="form-text text-danger" v-for="error of v$.fechaSubida.$errors" :key="error.$uid">{{ error.$message }}</small>
-            </div>
-          </div>
+
           <div class="form-group">
             <label class="form-control-label" v-text="t$('ventanillaUnicaApp.archivoAdjunto.pqrs')" for="archivo-adjunto-pqrs"></label>
             <select class="form-control" id="archivo-adjunto-pqrs" data-cy="pqrs" name="pqrs" v-model="archivoAdjunto.pqrs">
@@ -92,10 +87,11 @@
                 v-for="pqrsOption in pqrs"
                 :key="pqrsOption.id"
               >
-                {{ pqrsOption.id }}
+                {{ pqrsOption.titulo }}
               </option>
             </select>
           </div>
+
           <div class="form-group">
             <label
               class="form-control-label"
@@ -119,7 +115,7 @@
                 v-for="respuestaOption in respuestas"
                 :key="respuestaOption.id"
               >
-                {{ respuestaOption.id }}
+                {{ respuestaOption.contenido }}
               </option>
             </select>
           </div>
@@ -142,4 +138,5 @@
     </div>
   </div>
 </template>
+
 <script lang="ts" src="./archivo-adjunto-update.component.ts"></script>

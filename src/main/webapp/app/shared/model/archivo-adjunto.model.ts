@@ -9,6 +9,7 @@ export interface IArchivoAdjunto {
   fechaSubida?: Date;
   pqrs?: IPqrs | null;
   respuesta?: IRespuesta | null;
+  file?: File | null;
 }
 
 export class ArchivoAdjunto implements IArchivoAdjunto {

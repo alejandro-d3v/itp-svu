@@ -44,10 +44,10 @@ export default class ArchivoAdjuntoService {
     });
   }
 
-  public create(entity: IArchivoAdjunto): Promise<IArchivoAdjunto> {
+  public create(entity: FormData): Promise<IArchivoAdjunto> {
     return new Promise<IArchivoAdjunto>((resolve, reject) => {
       axios
-        .post(`${baseApiUrl}`, entity)
+        .post(`${baseApiUrl}`, entity, { headers: { 'Content-Type': 'multipart/form-data' } })
         .then(res => {
           resolve(res.data);
         })
@@ -57,10 +57,10 @@ export default class ArchivoAdjuntoService {
     });
   }
 
-  public update(entity: IArchivoAdjunto): Promise<IArchivoAdjunto> {
+  public update(entity: FormData, id: string): Promise<IArchivoAdjunto> {
     return new Promise<IArchivoAdjunto>((resolve, reject) => {
       axios
-        .put(`${baseApiUrl}/${entity.id}`, entity)
+        .put(`${baseApiUrl}/${id}`, entity, { headers: { 'Content-Type': 'multipart/form-data' } })
         .then(res => {
           resolve(res.data);
         })
@@ -74,6 +74,19 @@ export default class ArchivoAdjuntoService {
     return new Promise<IArchivoAdjunto>((resolve, reject) => {
       axios
         .patch(`${baseApiUrl}/${entity.id}`, entity)
+        .then(res => {
+          resolve(res.data);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  public downloadFile(attachmentId: string): Promise<Blob> {
+    return new Promise<Blob>((resolve, reject) => {
+      axios
+        .get(`${baseApiUrl}/${attachmentId}/download`, { responseType: 'blob' })
         .then(res => {
           resolve(res.data);
         })
