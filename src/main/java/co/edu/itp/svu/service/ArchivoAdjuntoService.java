@@ -4,6 +4,8 @@ import co.edu.itp.svu.domain.ArchivoAdjunto;
 import co.edu.itp.svu.repository.ArchivoAdjuntoRepository;
 import co.edu.itp.svu.service.dto.ArchivoAdjuntoDTO;
 import co.edu.itp.svu.service.mapper.ArchivoAdjuntoMapper;
+import co.edu.itp.svu.web.rest.errors.BadRequestAlertException;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class ArchivoAdjuntoService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ArchivoAdjuntoService.class);
+    private static final String ENTITY_NAME = "archivoAdjunto";
 
     private final ArchivoAdjuntoRepository archivoAdjuntoRepository;
 
@@ -37,8 +40,21 @@ public class ArchivoAdjuntoService {
      */
     public ArchivoAdjuntoDTO save(ArchivoAdjuntoDTO archivoAdjuntoDTO) {
         LOG.debug("Request to save ArchivoAdjunto : {}", archivoAdjuntoDTO);
+
+        if (archivoAdjuntoDTO.getFile() != null && !archivoAdjuntoDTO.getFile().isEmpty()) {
+            byte[] fileBytes;
+
+            try {
+                fileBytes = archivoAdjuntoDTO.getFile().getBytes();
+                archivoAdjuntoDTO.setFileData(fileBytes);
+            } catch (IOException e) {
+                throw new BadRequestAlertException("Error reading file", ENTITY_NAME, "fileerror");
+            }
+        }
+
         ArchivoAdjunto archivoAdjunto = archivoAdjuntoMapper.toEntity(archivoAdjuntoDTO);
         archivoAdjunto = archivoAdjuntoRepository.save(archivoAdjunto);
+
         return archivoAdjuntoMapper.toDto(archivoAdjunto);
     }
 
@@ -50,8 +66,19 @@ public class ArchivoAdjuntoService {
      */
     public ArchivoAdjuntoDTO update(ArchivoAdjuntoDTO archivoAdjuntoDTO) {
         LOG.debug("Request to update ArchivoAdjunto : {}", archivoAdjuntoDTO);
+
+        if (archivoAdjuntoDTO.getFile() != null) {
+            try {
+                byte[] fileBytes = archivoAdjuntoDTO.getFile().getBytes();
+                archivoAdjuntoDTO.setFileData(fileBytes);
+            } catch (IOException e) {
+                throw new BadRequestAlertException("Error reading file", ENTITY_NAME, "fileerror");
+            }
+        }
+
         ArchivoAdjunto archivoAdjunto = archivoAdjuntoMapper.toEntity(archivoAdjuntoDTO);
         archivoAdjunto = archivoAdjuntoRepository.save(archivoAdjunto);
+
         return archivoAdjuntoMapper.toDto(archivoAdjunto);
     }
 
@@ -69,9 +96,17 @@ public class ArchivoAdjuntoService {
             .map(existingArchivoAdjunto -> {
                 archivoAdjuntoMapper.partialUpdate(existingArchivoAdjunto, archivoAdjuntoDTO);
 
-                return existingArchivoAdjunto;
+                if (archivoAdjuntoDTO.getFile() != null) {
+                    try {
+                        byte[] fileBytes = archivoAdjuntoDTO.getFile().getBytes();
+                        existingArchivoAdjunto.setFileData(fileBytes); // Establecer los bytes del archivo
+                    } catch (IOException e) {
+                        throw new BadRequestAlertException("Error reading file", ENTITY_NAME, "fileerror");
+                    }
+                }
+
+                return archivoAdjuntoRepository.save(existingArchivoAdjunto);
             })
-            .map(archivoAdjuntoRepository::save)
             .map(archivoAdjuntoMapper::toDto);
     }
 

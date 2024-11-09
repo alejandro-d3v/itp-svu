@@ -4,6 +4,7 @@ import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * A DTO for the {@link co.edu.itp.svu.domain.ArchivoAdjunto} entity.
@@ -27,6 +28,10 @@ public class ArchivoAdjuntoDTO implements Serializable {
     private PqrsDTO pqrs;
 
     private RespuestaDTO respuesta;
+
+    private MultipartFile file;
+
+    private byte[] fileData;
 
     public String getId() {
         return id;
@@ -84,6 +89,22 @@ public class ArchivoAdjuntoDTO implements Serializable {
         this.respuesta = respuesta;
     }
 
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public byte[] getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(byte[] fileData) {
+        this.fileData = fileData;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -116,6 +137,7 @@ public class ArchivoAdjuntoDTO implements Serializable {
             ", fechaSubida='" + getFechaSubida() + "'" +
             ", pqrs=" + getPqrs() +
             ", respuesta=" + getRespuesta() +
+            ", file=" + (file != null ? file.getSize() + " bytes" : "null") +
             "}";
     }
 }

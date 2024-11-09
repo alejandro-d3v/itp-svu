@@ -8,6 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * A ArchivoAdjunto.
@@ -46,7 +47,11 @@ public class ArchivoAdjunto implements Serializable {
     @JsonIgnoreProperties(value = { "archivosAdjuntos", "pqr" }, allowSetters = true)
     private Respuesta respuesta;
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    @Field("file")
+    private MultipartFile file;
+
+    @Field("fileData")
+    private byte[] fileData;
 
     public String getId() {
         return this.id;
@@ -136,6 +141,32 @@ public class ArchivoAdjunto implements Serializable {
 
     public ArchivoAdjunto respuesta(Respuesta respuesta) {
         this.setRespuesta(respuesta);
+        return this;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
+    }
+
+    public ArchivoAdjunto file(MultipartFile file) {
+        this.setFile(file);
+        return this;
+    }
+
+    public byte[] getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(byte[] fileData) {
+        this.fileData = fileData;
+    }
+
+    public ArchivoAdjunto fileData(byte[] fileData) {
+        this.setFileData(fileData);
         return this;
     }
 
