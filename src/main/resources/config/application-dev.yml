@@ -21,6 +21,10 @@ logging:
     co.edu.itp.svu: DEBUG
 
 spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
   devtools:
     restart:
       enabled: true
