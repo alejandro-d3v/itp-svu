@@ -34,11 +34,30 @@ export default defineComponent({
       retrieveArchivoAdjunto(route.params.archivoAdjuntoId);
     }
 
+    const downloadFile = async () => {
+      if (archivoAdjunto.value.id) {
+        const blob = await archivoAdjuntoService().downloadFile(archivoAdjunto.value.id);
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+
+        link.href = url;
+        link.setAttribute('download', archivoAdjunto.value.nombre || 'archivo');
+
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+    };
+
     return {
       ...dateFormat,
       alertService,
       archivoAdjunto,
 
+      downloadFile,
       previousState,
       t$: useI18n().t,
     };

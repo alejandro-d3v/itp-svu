@@ -52,6 +52,9 @@
         <button type="submit" @click.prevent="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
           <font-awesome-icon icon="arrow-left"></font-awesome-icon>&nbsp;<span v-text="t$('entity.action.back')"></span>
         </button>
+        <button type="button" @click.prevent="downloadFile()" class="btn btn-info mx-2" data-cy="downloadFileButton">
+          <font-awesome-icon icon="download"></font-awesome-icon>&nbsp;<span v-text="t$('Descargar')"></span>
+        </button>
         <router-link
           v-if="archivoAdjunto.id"
           :to="{ name: 'ArchivoAdjuntoEdit', params: { archivoAdjuntoId: archivoAdjunto.id } }"
