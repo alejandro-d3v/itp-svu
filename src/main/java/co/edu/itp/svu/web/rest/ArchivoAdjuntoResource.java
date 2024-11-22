@@ -2,12 +2,19 @@ package co.edu.itp.svu.web.rest;
 
 import co.edu.itp.svu.repository.ArchivoAdjuntoRepository;
 import co.edu.itp.svu.service.ArchivoAdjuntoService;
+import co.edu.itp.svu.service.PqrsService;
+import co.edu.itp.svu.service.RespuestaService;
 import co.edu.itp.svu.service.dto.ArchivoAdjuntoDTO;
+import co.edu.itp.svu.service.dto.PqrsDTO;
+import co.edu.itp.svu.service.dto.RespuestaDTO;
 import co.edu.itp.svu.web.rest.errors.BadRequestAlertException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -16,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -34,11 +42,20 @@ public class ArchivoAdjuntoResource {
     private String applicationName;
 
     private final ArchivoAdjuntoService archivoAdjuntoService;
+    private final PqrsService pqrsService;
+    private final RespuestaService respuestaService;
 
     private final ArchivoAdjuntoRepository archivoAdjuntoRepository;
 
-    public ArchivoAdjuntoResource(ArchivoAdjuntoService archivoAdjuntoService, ArchivoAdjuntoRepository archivoAdjuntoRepository) {
+    public ArchivoAdjuntoResource(
+        ArchivoAdjuntoService archivoAdjuntoService,
+        PqrsService pqrsService,
+        RespuestaService respuestaService,
+        ArchivoAdjuntoRepository archivoAdjuntoRepository
+    ) {
         this.archivoAdjuntoService = archivoAdjuntoService;
+        this.pqrsService = pqrsService;
+        this.respuestaService = respuestaService;
         this.archivoAdjuntoRepository = archivoAdjuntoRepository;
     }
 
@@ -49,14 +66,63 @@ public class ArchivoAdjuntoResource {
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new archivoAdjuntoDTO, or with status {@code 400 (Bad Request)} if the archivoAdjunto has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("")
-    public ResponseEntity<ArchivoAdjuntoDTO> createArchivoAdjunto(@Valid @RequestBody ArchivoAdjuntoDTO archivoAdjuntoDTO)
-        throws URISyntaxException {
-        LOG.debug("REST request to save ArchivoAdjunto : {}", archivoAdjuntoDTO);
-        if (archivoAdjuntoDTO.getId() != null) {
-            throw new BadRequestAlertException("A new archivoAdjunto cannot already have an ID", ENTITY_NAME, "idexists");
+    @PostMapping(value = "", consumes = "multipart/form-data")
+    public ResponseEntity<ArchivoAdjuntoDTO> createArchivoAdjunto(
+        @RequestParam("file") MultipartFile file,
+        @RequestParam(value = "nombre", required = false) String nombre,
+        @RequestParam(value = "tipo", required = false) String tipo,
+        @RequestParam(value = "urlArchivo", required = false) String urlArchivo,
+        @RequestParam(value = "pqrsId", required = false) String pqrsId,
+        @RequestParam(value = "respuestaId", required = false) String respuestaId
+    ) throws URISyntaxException {
+        LOG.debug("REST request to save ArchivoAdjunto : {}", file.getOriginalFilename());
+
+        if (file.isEmpty()) {
+            throw new BadRequestAlertException("No file uploaded", ENTITY_NAME, "fileempty");
         }
+
+        ArchivoAdjuntoDTO archivoAdjuntoDTO = new ArchivoAdjuntoDTO();
+        archivoAdjuntoDTO.setNombre(nombre);
+        archivoAdjuntoDTO.setTipo(tipo);
+        archivoAdjuntoDTO.setUrlArchivo(urlArchivo);
+        archivoAdjuntoDTO.setFechaSubida(Instant.now());
+
+        if (nombre == null) {
+            archivoAdjuntoDTO.setNombre(file.getOriginalFilename());
+        }
+        if (tipo == null) {
+            String fileType = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+            archivoAdjuntoDTO.setTipo(fileType);
+        }
+        if (pqrsId != null) {
+            PqrsDTO pqrsDTO = pqrsService.findOne(pqrsId).get();
+            archivoAdjuntoDTO.setPqrs(pqrsDTO);
+        }
+        if (respuestaId != null) {
+            RespuestaDTO respuestaDTO = respuestaService.findOne(respuestaId).get();
+            archivoAdjuntoDTO.setRespuesta(respuestaDTO);
+        }
+
+        // Usando una ruta absoluta o relativa
+        File directory = new File(System.getProperty("user.dir") + "/uploads/files/");
+        if (!directory.exists()) {
+            boolean dirCreated = directory.mkdirs();
+            if (!dirCreated) {
+                throw new RuntimeException("No se pudo crear el directorio para guardar el archivo.");
+            }
+        }
+
+        String filePath = directory.getPath() + "/" + file.getOriginalFilename();
+
+        try {
+            file.transferTo(new File(filePath));
+        } catch (IOException e) {
+            LOG.error("Error al guardar el archivo en el sistema de archivos", e);
+            throw new RuntimeException("Error al guardar el archivo", e);
+        }
+
         archivoAdjuntoDTO = archivoAdjuntoService.save(archivoAdjuntoDTO);
+
         return ResponseEntity.created(new URI("/api/archivo-adjuntos/" + archivoAdjuntoDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, archivoAdjuntoDTO.getId()))
             .body(archivoAdjuntoDTO);
