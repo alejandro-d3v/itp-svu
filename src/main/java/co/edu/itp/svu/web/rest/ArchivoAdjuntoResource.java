@@ -18,12 +18,14 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -112,10 +114,19 @@ public class ArchivoAdjuntoResource {
             }
         }
 
-        String filePath = directory.getPath() + "/" + file.getOriginalFilename();
+        String originalFilename = file.getOriginalFilename();
+        String uniqueFileName = UUID.randomUUID().toString() + "_" + originalFilename; // Generar un nombre único
+        String filePath = directory.getPath() + "/" + uniqueFileName;
 
         try {
             file.transferTo(new File(filePath));
+
+            // Generar la URL completa del archivo guardado
+            String fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/uploads/files/")
+                .path(uniqueFileName)
+                .toUriString();
+            archivoAdjuntoDTO.setUrlArchivo(fileUrl); // Asignar la URL al DTO
         } catch (IOException e) {
             LOG.error("Error al guardar el archivo en el sistema de archivos", e);
             throw new RuntimeException("Error al guardar el archivo", e);
